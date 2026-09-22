@@ -13,3 +13,14 @@ lobbyButtons.forEach(function(button){
         button.style.backgroundColor = "#A6B1BA"
     })
 })
+
+const startGameButton = document.querySelector("#start-game-button");
+const startMessage = document.querySelector('#start-message')
+
+startGameButton.addEventListener("click", function(){
+    if (playerCount === 0) {
+        startMessage.textContent = "Please select the number of players before starting the game."
+    }else{
+        startMessage.textContent = "Starting game with " + playerCount + " players!"
+    }
+})
