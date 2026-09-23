@@ -9,45 +9,85 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use(express.json());
 
-const players = [];
-let maxPlayers = 0;
+const game = {
+    players: [],
+    maxPlayers: 0,
+    started: false
+};
 
+function createDeck(){
+    let cardID = 1;
+    const deck = [];
+    for (let i = 1; i < 13; i++ ){
+        for(let j = 1; j < 4; j++){
+            let card = {id: cardID, value: i }
+            deck.push(card);
+            cardID ++;
+        }
+    }
+    return deck;
+}
+
+
+//Endpoint for players joining the game and validating names
 app.post("/api/players", (req, res) => {
-    const playerName = req.body.name;
-    if (maxPlayers === 0) {
+    const playerName = req.body.name?.trim();
+    if (!playerName){//Makes sure that the player name isnt empty
+        return res.status(400).json({
+            message: "Please provide a valid player name"
+        })
+    }
+
+    if (game.maxPlayers === 0) {//Check that player count has been selected
         return res.status(400).json({
             message: "The game has not been configured yet."
         });
-    }else if (players.length >= maxPlayers) {
+    }
+    
+    if (game.players.length >= game.maxPlayers) {//Checks if game is full
         return res.status(400).json({
             message: "Game is full"
         });
-    }else{
-        players.push({
-            name: playerName
-        });
-        res.status(201).json({
-            message: "Player added successfully: Welcome, " + playerName + "!",
-            player: {
-                name: playerName
-            }
-        });
     }
+
+    const dupeName = game.players.some((player) => {
+        return player.name.toLowerCase() === playerName.toLowerCase();
+    });
+    if (dupeName) {
+        return res.status(400).json({
+            message: "Player Name is already taken!"
+        })
+    }
+
+    
+    game.players.push({
+        name: playerName
+    });
+
+    res.status(201).json({
+        message: "Player added successfully: Welcome, " + playerName + "!",
+        player: {
+            name: playerName
+        }
+    });
+    
     
 });
 
+//Endpoint to retrieve all current players
 app.get("/api/players", (req, res) => {
     res.json({
-        players: players
+        players: game.players
     });
 });
 
+//This endpoint is for selecting the amount of players when begginning the game
 app.post("/api/game", (req,res) => {
     const playerCount = req.body.playerCount;
     if (playerCount >= 3 && playerCount <=  6) {
-        maxPlayers = playerCount;
+        game.maxPlayers = playerCount;
         res.status(200).json({
-            message: "Starting game with " + maxPlayers + " players!"
+            message: "Starting game with " + game.maxPlayers + " players!"
         })
     }else{
         res.status(400).json({
