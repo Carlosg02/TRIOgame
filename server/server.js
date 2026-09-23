@@ -49,6 +49,7 @@ function dealCards(deck,players){
     shuffleDeck(deck);
     players.forEach((player)=>{
         player.hand = deck.splice(0, cardsPerPlayer[players.length])
+        player.hand.sort((a,b) => a.value - b.value);
     })
     return deck;
 }
