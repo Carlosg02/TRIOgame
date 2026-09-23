@@ -15,6 +15,13 @@ const game = {
     started: false
 };
 
+const cardsPerPlayer = {
+    3: 9,
+    4: 7,
+    5: 6,
+    6: 5
+};
+
 function createDeck(){
     let cardID = 1;
     const deck = [];
@@ -37,6 +44,14 @@ function shuffleDeck(deck){
     }
 }
 
+
+function dealCards(deck,players){
+    shuffleDeck(deck);
+    players.forEach((player)=>{
+        player.hand = deck.splice(0, cardsPerPlayer[players.length])
+    })
+    return deck;
+}
 
 //Endpoint for players joining the game and validating names
 app.post("/api/players", (req, res) => {
