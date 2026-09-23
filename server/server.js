@@ -28,6 +28,15 @@ function createDeck(){
     return deck;
 }
 
+function shuffleDeck(deck){
+    for( let i = deck.length -1; i >0; i--){
+        let randomIndex = Math.floor(Math.random() * (i+1));
+        let temp = deck[randomIndex];
+        deck[randomIndex] = deck[i];
+        deck[i] = temp;
+    }
+}
+
 
 //Endpoint for players joining the game and validating names
 app.post("/api/players", (req, res) => {
