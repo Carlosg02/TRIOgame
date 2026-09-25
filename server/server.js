@@ -12,7 +12,13 @@ app.use(express.json());
 const game = {
     players: [],
     maxPlayers: 0,
-    started: false
+    status: "lobby",
+    center: [],
+    currentPlayerID: null,
+    turn: {
+        revealedCards: []
+    }
+
 };
 
 const cardsPerPlayer = {
@@ -54,6 +60,131 @@ function dealCards(deck,players){
     return deck;
 }
 
+function startGame(){
+    const deck = createDeck();
+    const center = dealCards(deck, game.players);
+    game.center = center;
+    game.status = "playing";
+    setStartingPlayer();
+    console.log(game);
+    
+}
+
+function setStartingPlayer(playerId){
+    const startingPlayer = game.players.find((player) => {
+        return player.id === playerId;
+    })
+
+    if (startingPlayer !== undefined){
+        game.currentPlayerID = playerId
+    }
+}
+
+function advanceTurn(){
+    const currentIndex = game.players.findIndex((player)=> {
+        return player.id === game.currentPlayerID;
+    })
+    const nextPlayerIndex = (currentIndex + 1) % game.players.length;
+    game.currentPlayerID = game.players[nextPlayerIndex].id;
+}
+
+function getPlayerCard(playerId, position){
+    const chosenPlayer = game.players.find((player)=>{
+        return player.id === playerId;
+    })
+    if (chosenPlayer === undefined){
+        return undefined;
+    }
+    const availableCards = chosenPlayer.hand.filter((card)=>{
+        const alreadyRevealed = game.turn.revealedCards.some((revealedCard) => {
+            return revealedCard.cardId === card.id;
+        });
+
+        return !alreadyRevealed;
+    })
+    console.log(availableCards);
+    
+    if(position === "lowest"){
+        return availableCards[0];
+    }
+    if(position === "highest"){
+        return availableCards[availableCards - 1];
+    }
+    return undefined;
+}
+
+function getCenterCard(cardId){
+    const chosenCard = game.center.find((card)=>{
+        return card.id === cardId;
+    })
+
+    return chosenCard;
+}
+
+function saveRevealedCard(card,source,playerId = null){
+    const givenCard = { 
+        cardId: card.id,
+        value: card.value,
+        source: source,
+        playerId: playerId
+    } 
+    game.turn.revealedCards.push(givenCard);
+}
+
+function revealCard(source, options){
+    let card = undefined;
+    if (source === "player"){
+        card = getPlayerCard(options.playerId, options.position);
+        if (card != undefined){
+            saveRevealedCard(card,source,options.playerId);
+        }
+    }else if(source === "center"){
+        card = getCenterCard(options.cardId);
+        if (card != undefined){
+            saveRevealedCard(card,source);
+        }
+    }
+}
+
+function revealedCardsMatch(){
+    if(game.turn.revealedCards.length == 0){
+        return false;
+    }
+    const firstValue = game.turn.revealedCards[0].value;
+    return game.turn.revealedCards.every((card)=>{
+        return card.value === firstValue;
+    });
+}
+
+function continueReveal(){
+    if(game.turn.revealedCards.length === 1){
+        return "Reveal Another";
+    }else if (game.turn.revealedCards.length === 2){
+        if(revealedCardsMatch()){
+            return "Continue";
+        }else{
+            return "End Turn" ;
+        }
+    }else if(game.turn.revealedCards.length === 3){
+        if(revealedCardsMatch()){
+            return "TRIO";
+        }else{
+            return "End Turn" ;
+        }
+    }
+
+}
+
+function endTurn(){
+    game.turn.revealedCards = [];
+    advanceTurn();
+}
+
+
+
+
+////------------------End Points ---------------------------------
+
 //Endpoint for players joining the game and validating names
 app.post("/api/players", (req, res) => {
     const playerName = req.body.name?.trim();
@@ -86,8 +217,12 @@ app.post("/api/players", (req, res) => {
 
     
     game.players.push({
-        name: playerName
+        id: "player-" + (game.players.length + 1),
+        name: playerName,
+        hand: [],
+        trios: []
     });
+
 
     res.status(201).json({
         message: "Player added successfully: Welcome, " + playerName + "!",
@@ -109,11 +244,21 @@ app.get("/api/players", (req, res) => {
 //This endpoint is for selecting the amount of players when begginning the game
 app.post("/api/game", (req,res) => {
     const playerCount = req.body.playerCount;
+
     if (playerCount >= 3 && playerCount <=  6) {
         game.maxPlayers = playerCount;
-        res.status(200).json({
-            message: "Starting game with " + game.maxPlayers + " players!"
-        })
+        if(game.players.length === game.maxPlayers){
+            startGame();
+            
+            res.status(200).json({
+                message: "Starting game with " + game.maxPlayers + " players!"
+            })
+        }else{
+            res.status(400).json({
+                message: "Not all players have joined"
+            })
+        }
+        
     }else{
         res.status(400).json({
             message: "Invalid player count"
@@ -124,3 +269,36 @@ app.post("/api/game", (req,res) => {
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT)
 })
+
+
+// game.players = [
+//     { id: "player-1", name: "Carlos", hand: [{ id: 6, value: 2 },
+//     { id: 7, value: 3 },
+//     { id: 9, value: 3 },
+//     { id: 10, value: 4 },
+//     { id: 24, value: 8 },
+//     { id: 23, value: 8 },
+//     { id: 31, value: 11 }], trios: [] },
+//     { id: "player-2", name: "David", hand: [], trios: [] },
+//     { id: "player-3", name: "Sarah", hand: [], trios: [] },
+//     { id: "player-4", name: "Josh", hand: [], trios: [] }
+// ];
+
+// const deck = createDeck();
+// game.center = dealCards(deck, game.players);
+
+// console.log(game.players[0]);
+// console.log(revealCard("player",{playerId: "player-1",position: "lowest"}));
+// console.log(game.turn.revealedCards);
+// console.log(revealCard("player",{playerId: "player-1",position: "lowest"}));
+// console.log(game.turn.revealedCards);
+// revealCard("player", {
+//     playerId: "player-2",
+//     position: "highest"
+// });
+// revealCard("center", {
+//     cardId: 17
+// });
+// console.log(game.turn.revealedCards);
+
+
