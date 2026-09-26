@@ -244,24 +244,58 @@ function revealResults(){
     }
 }
 
-function revealCard(source, options){
+function revealCard(actingPlayerId, source, options){
     if(game.status !== "playing"){
-        return;
+        return {
+            success: false,
+            message: "Game is not currently playing"
+        };
+    }
+    if(game.currentPlayerID !== actingPlayerId){
+        return {
+            success: false,
+            message: "It is not your turn"
+        };
+    }
+    if(source !== "center" && source !== "player"){
+        return {
+            success: false,
+            message: "Invalid card source"
+        };
     }
     let card = undefined;
     if (source === "player"){
+        if(options.position !== "lowest" && options.position !== "highest"){
+            return{
+                success: false,
+                message: "invalid card position"
+            };
+        }
         card = getPlayerCard(options.playerId, options.position);
         if (card !== undefined){
             saveRevealedCard(card,source,options.playerId);
             revealResults();
+            return {
+                success: true,
+                message: "Card revealed"
+            }
         }
     }else if(source === "center"){
         card = getCenterCard(options.cardId);
         if (card !== undefined){
             saveRevealedCard(card,source);
             revealResults();
+            return {
+                success: true,
+                message: "Card revealed"
+            }
         }
     }
+    return {
+                success: false,
+                message: "Card could not be revealed"
+            }
+    
 }
 
 
@@ -356,29 +390,29 @@ app.listen(PORT, () => {
 })
 
 
-// game.players = [
-//     { id: "player-1", name: "Carlos", hand: [
-//     { id: 7, value: 7 },
-//     { id: 9, value: 7 },
-//     { id: 10, value: 4 },
-//     { id: 24, value: 4 },
-//     { id: 23, value: 5 },
-//     { id: 31, value: 5 }], trios: [] },
-//     { id: "player-2", name: "David", hand: [], trios: [] },
-//     { id: "player-3", name: "Sarah", hand: [], trios: [] },
-//     { id: "player-4", name: "Josh", hand: [], trios: [] }
-// ];
-// game.currentPlayerID = "player-1"
-// game.status = "playing"
+game.players = [
+    { id: "player-1", name: "Carlos", hand: [
+    { id: 7, value: 7 },
+    { id: 9, value: 7 },
+    { id: 10, value: 4 },
+    { id: 24, value: 4 },
+    { id: 23, value: 5 },
+    { id: 31, value: 5 }], trios: [] },
+    { id: "player-2", name: "David", hand: [], trios: [] },
+    { id: "player-3", name: "Sarah", hand: [], trios: [] },
+    { id: "player-4", name: "Josh", hand: [], trios: [] }
+];
+game.currentPlayerID = "player-1"
+game.status = "playing"
 
 // const deck = createDeck();
 // game.center = dealCards(deck, game.players);
 
-// game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
+game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
 // console.log(game.center)
 // console.log(game.players[0]);
-// revealCard("player",{playerId: "player-1",position: "lowest"});
-// console.log(game.turn.revealedCards);
+console.log(revealCard("player-1","player",{playerId: "player-1",position: "lowest"}));
+console.log(game.turn.revealedCards);
 // revealCard("player",{playerId: "player-1",position: "lowest"});
 // revealCard('center', {cardId: 8})
 // console.log(game.players[0]);
