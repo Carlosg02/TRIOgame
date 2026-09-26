@@ -15,6 +15,7 @@ const game = {
     status: "lobby",
     center: [],
     currentPlayerID: null,
+    winnerID: null,
     turn: {
         revealedCards: []
     }
@@ -102,7 +103,7 @@ function getPlayerCard(playerId, position){
 
         return !alreadyRevealed;
     })
-    console.log(availableCards);
+    // console.log(availableCards);
     
     if(position === "lowest"){
         return availableCards[0];
@@ -118,6 +119,18 @@ function getCenterCard(cardId){
         return card.id === cardId;
     })
 
+    if (chosenCard === undefined) {
+        return undefined;
+    }
+
+    const alreadyRevealed = game.turn.revealedCards.some((revealedCard) => {
+        return revealedCard.cardId === chosenCard.id;
+    });
+
+    if(alreadyRevealed){
+        return undefined;
+    }
+
     return chosenCard;
 }
 
@@ -131,20 +144,6 @@ function saveRevealedCard(card,source,playerId = null){
     game.turn.revealedCards.push(givenCard);
 }
 
-function revealCard(source, options){
-    let card = undefined;
-    if (source === "player"){
-        card = getPlayerCard(options.playerId, options.position);
-        if (card != undefined){
-            saveRevealedCard(card,source,options.playerId);
-        }
-    }else if(source === "center"){
-        card = getCenterCard(options.cardId);
-        if (card != undefined){
-            saveRevealedCard(card,source);
-        }
-    }
-}
 
 function revealedCardsMatch(){
     if(game.turn.revealedCards.length == 0){
@@ -179,6 +178,92 @@ function endTurn(){
     game.turn.revealedCards = [];
     advanceTurn();
 }
+
+function removeRevealedCard(revealedCard){
+    const cardSource = revealedCard.source;
+
+    if (cardSource === "center"){
+        game.center = game.center.filter((card) => {
+            return card.id !== revealedCard.cardId;
+        })
+    }else if (cardSource === "player"){
+        const player = game.players.find((player) =>{
+            return player.id === revealedCard.playerId;
+        })
+        player.hand = player.hand.filter((card)=>{
+            return card.id !== revealedCard.cardId;
+        })
+
+    }
+}
+
+function endGame(){
+    game.status = "finished";
+    game.winnerID = game.currentPlayerID;
+}
+
+function checkWinner(player){
+    if(player.trios.includes(7)){
+        return true;
+    }else if (player.trios.length >= 3){
+        return true;
+    }
+    return false;
+}
+
+function collectTrio(){
+    const trioValue = game.turn.revealedCards[0].value;
+
+    const player  = game.players.find((player) =>{
+        return player.id === game.currentPlayerID;
+    })
+
+    player.trios.push(trioValue);
+
+    if(checkWinner(player)){
+        endGame();
+    }else{
+        game.turn.revealedCards.forEach((card)=>{
+            removeRevealedCard(card);
+        })
+
+        game.turn.revealedCards = [];
+
+        advanceTurn();
+    }
+
+}
+
+function revealResults(){
+    const turnResult = continueReveal();
+
+    if (turnResult === "End Turn"){
+        endTurn();
+    }else if(turnResult === "TRIO"){
+        collectTrio();
+    }
+}
+
+function revealCard(source, options){
+    if(game.status !== "playing"){
+        return;
+    }
+    let card = undefined;
+    if (source === "player"){
+        card = getPlayerCard(options.playerId, options.position);
+        if (card !== undefined){
+            saveRevealedCard(card,source,options.playerId);
+            revealResults();
+        }
+    }else if(source === "center"){
+        card = getCenterCard(options.cardId);
+        if (card !== undefined){
+            saveRevealedCard(card,source);
+            revealResults();
+        }
+    }
+}
+
 
 
 
@@ -272,26 +357,49 @@ app.listen(PORT, () => {
 
 
 // game.players = [
-//     { id: "player-1", name: "Carlos", hand: [{ id: 6, value: 2 },
-//     { id: 7, value: 3 },
-//     { id: 9, value: 3 },
+//     { id: "player-1", name: "Carlos", hand: [
+//     { id: 7, value: 7 },
+//     { id: 9, value: 7 },
 //     { id: 10, value: 4 },
-//     { id: 24, value: 8 },
-//     { id: 23, value: 8 },
-//     { id: 31, value: 11 }], trios: [] },
+//     { id: 24, value: 4 },
+//     { id: 23, value: 5 },
+//     { id: 31, value: 5 }], trios: [] },
 //     { id: "player-2", name: "David", hand: [], trios: [] },
 //     { id: "player-3", name: "Sarah", hand: [], trios: [] },
 //     { id: "player-4", name: "Josh", hand: [], trios: [] }
 // ];
+// game.currentPlayerID = "player-1"
+// game.status = "playing"
 
 // const deck = createDeck();
 // game.center = dealCards(deck, game.players);
 
+// game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
+// console.log(game.center)
 // console.log(game.players[0]);
-// console.log(revealCard("player",{playerId: "player-1",position: "lowest"}));
+// revealCard("player",{playerId: "player-1",position: "lowest"});
+// console.log(game.turn.revealedCards);
+// revealCard("player",{playerId: "player-1",position: "lowest"});
+// revealCard('center', {cardId: 8})
+// console.log(game.players[0]);
+// game.currentPlayerID = "player-1"
+// revealCard("player",{playerId: "player-1",position: "lowest"});
+// revealCard("player",{playerId: "player-1",position: "lowest"});
+// revealCard('center', {cardId: 11})
+// console.log(game.players[0]);
+
+// console.log(game);
 // console.log(game.turn.revealedCards);
 // console.log(revealCard("player",{playerId: "player-1",position: "lowest"}));
 // console.log(game.turn.revealedCards);
+
+
+// console.log(revealCard("player",{playerId: "player-1",position: "lowest"}));
+// console.log(game.turn.revealedCards);
+// removeRevealedCard(game.turn.revealedCards[0]);
+// console.log(game.players[0])
+// console.log(game.center)
+// console.log(game);
 // revealCard("player", {
 //     playerId: "player-2",
 //     position: "highest"
