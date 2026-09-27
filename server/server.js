@@ -298,9 +298,33 @@ function revealCard(actingPlayerId, source, options){
     
 }
 
+function getPlayerGameState(playerId){
+    const currPlayer = game.players.find((player) =>{
+        return player.id === playerId;
+    })
 
+    if (currPlayer === undefined){
+        return undefined;
+    }
 
+    const publicPlayers = game.players.map((player) => {
+        return {
+            id: player.id,
+            name: player.name,
+            cardCount: player.hand.length,
+            trios: player.trios
+        }
+    });
 
+    return {
+        status: game.status,
+        currentPlayerID: game.currentPlayerID,
+        winnerID: game.winnerID,
+        hand: currPlayer.hand,
+        trios: currPlayer.trios,
+        players: publicPlayers
+    }
+}
 
 ////------------------End Points ---------------------------------
 
@@ -385,11 +409,44 @@ app.post("/api/game", (req,res) => {
     }
 });
 
+app.post("/api/game/reveal",(req,res)=>{
+    const actingPlayerId = req.body.actingPlayerId;
+    const source = req.body.source;
+    const options = req.body.options;
+
+    const results = revealCard(actingPlayerId, source, options);
+    
+    console.log(results);
+    
+    if (results.success){
+        return res.status(200).json({
+            message: results.message
+        });
+    }
+
+    return res.status(400).json({
+        message: results.message
+    });
+    
+})
+
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT)
 })
 
+app.get("/api/game/player/:playerId", (req,res)=>{
+    const playerId = req.params.playerId;
+    const result = getPlayerGameState(playerId);
 
+    if (result === undefined){
+        return res.status(404).json({
+            message: "Player not found"
+        })
+    }
+    return res.status(200).json(result);
+})
+
+////////////////// TEST //////////////////////////
 game.players = [
     { id: "player-1", name: "Carlos", hand: [
     { id: 7, value: 7 },
@@ -398,7 +455,14 @@ game.players = [
     { id: 24, value: 4 },
     { id: 23, value: 5 },
     { id: 31, value: 5 }], trios: [] },
-    { id: "player-2", name: "David", hand: [], trios: [] },
+    { id: "player-2", name: "David", hand: [
+        { id: 1, value: 1 },
+        { id: 2, value: 2 },
+        { id: 3, value: 3 },
+        { id: 4, value: 6 },
+        { id: 5, value: 8 },
+        { id: 6, value: 9 }
+    ], trios: [] },
     { id: "player-3", name: "Sarah", hand: [], trios: [] },
     { id: "player-4", name: "Josh", hand: [], trios: [] }
 ];
@@ -409,10 +473,14 @@ game.status = "playing"
 // game.center = dealCards(deck, game.players);
 
 game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
+console.log("Status:", game.status);
+console.log("Current player:", game.currentPlayerID);
+console.log("Players:", game.players);
+console.log("Center:", game.center);
 // console.log(game.center)
 // console.log(game.players[0]);
-console.log(revealCard("player-1","player",{playerId: "player-1",position: "lowest"}));
-console.log(game.turn.revealedCards);
+// console.log(revealCard("player-1","player",{playerId: "player-1",position: "lowest"}));
+// console.log(game.turn.revealedCards);
 // revealCard("player",{playerId: "player-1",position: "lowest"});
 // revealCard('center', {cardId: 8})
 // console.log(game.players[0]);
@@ -443,4 +511,21 @@ console.log(game.turn.revealedCards);
 // });
 // console.log(game.turn.revealedCards);
 
+// const response = fetch("/api/game/reveal", {
+//             method: "POST",
+//             headers:{
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//                 "actingPlayerId": "player-1",
+//                 "source": "player",
+//                 "options": {
+//                     "playerId": "player-2",
+//                     "position": "lowest"
+//                 }
+//             })
+//         });
 
+// const data = response.json();
+
+// console.log(data);
