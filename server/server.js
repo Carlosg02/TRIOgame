@@ -479,6 +479,8 @@ app.get("/api/game/player/:playerId", (req,res)=>{
     return res.status(200).json(result);
 })
 
+
+
 ////////////////// TEST //////////////////////////
 // game.players = [
 //     { id: "player-1", name: "Carlos", hand: [
@@ -499,7 +501,7 @@ app.get("/api/game/player/:playerId", (req,res)=>{
 //     { id: "player-3", name: "Sarah", hand: [], trios: [] },
 //     { id: "player-4", name: "Josh", hand: [], trios: [] }
 // ];
-// game.currentPlayerID = "player-1"
+game.currentPlayerID = "player-1"
 // game.status = "playing"
 
 // const deck = createDeck();
