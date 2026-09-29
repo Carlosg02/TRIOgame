@@ -18,7 +18,7 @@ joinButton.addEventListener("click", async function(){
         const data = await response.json();
 
         if (response.ok){
-            localStorage.setItem("playerId", data.player.id);
+            sessionStorage.setItem("playerId", data.player.id);
         }
 
         joinMessage.textContent = data.message;
@@ -26,3 +26,18 @@ joinButton.addEventListener("click", async function(){
         joinMessage.textContent = "Please enter your name to join"
     }
 })
+
+async function getGameState(){
+    const playerId = sessionStorage.getItem("playerId");
+    if (playerId === null){
+        return;
+    }
+    const response = await fetch(`/api/game/player/${playerId}`,{
+        method : "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+    const data = await response.json();
+    console.log(data);
+}
