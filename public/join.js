@@ -17,6 +17,10 @@ joinButton.addEventListener("click", async function(){
 
         const data = await response.json();
 
+        if (response.ok){
+            localStorage.setItem("playerId", data.player.id);
+        }
+
         joinMessage.textContent = data.message;
     } else{
         joinMessage.textContent = "Please enter your name to join"

@@ -308,13 +308,43 @@ function getPlayerGameState(playerId){
     }
 
     const publicPlayers = game.players.map((player) => {
+        const revealedCards = game.turn.revealedCards.filter((card)=>{
+            return card.source === "player" &&
+                card.playerId === player.id;
+        })
+        const revealedCardInfo = revealedCards.map((card)=> {
+            return{
+                id: card.cardId,
+                value: card.value
+            }
+        })
         return {
             id: player.id,
             name: player.name,
             cardCount: player.hand.length,
-            trios: player.trios
+            trios: player.trios,
+            revealedCards: revealedCardInfo
         }
     });
+
+    const publicCenter = game.center.map((card) => {
+        const revealedCard = game.turn.revealedCards.find((revealedCard) => {
+            return revealedCard.cardId === card.id;
+        });
+
+        if(revealedCard === undefined){
+            return {
+                id: card.id,
+                revealed: false
+            }
+        }
+
+        return {
+            id: card.id,
+            value: card.value,
+            revealed: true
+        }
+    }); 
 
     return {
         status: game.status,
@@ -322,7 +352,8 @@ function getPlayerGameState(playerId){
         winnerID: game.winnerID,
         hand: currPlayer.hand,
         trios: currPlayer.trios,
-        players: publicPlayers
+        players: publicPlayers,
+        center: publicCenter
     }
 }
 
@@ -358,18 +389,20 @@ app.post("/api/players", (req, res) => {
         })
     }
 
-    
-    game.players.push({
+    const newPlayer = {
         id: "player-" + (game.players.length + 1),
         name: playerName,
         hand: [],
         trios: []
-    });
+    }
+    
+    game.players.push(newPlayer);
 
 
     res.status(201).json({
         message: "Player added successfully: Welcome, " + playerName + "!",
         player: {
+            id: newPlayer.id,
             name: playerName
         }
     });
@@ -447,36 +480,37 @@ app.get("/api/game/player/:playerId", (req,res)=>{
 })
 
 ////////////////// TEST //////////////////////////
-game.players = [
-    { id: "player-1", name: "Carlos", hand: [
-    { id: 7, value: 7 },
-    { id: 9, value: 7 },
-    { id: 10, value: 4 },
-    { id: 24, value: 4 },
-    { id: 23, value: 5 },
-    { id: 31, value: 5 }], trios: [] },
-    { id: "player-2", name: "David", hand: [
-        { id: 1, value: 1 },
-        { id: 2, value: 2 },
-        { id: 3, value: 3 },
-        { id: 4, value: 6 },
-        { id: 5, value: 8 },
-        { id: 6, value: 9 }
-    ], trios: [] },
-    { id: "player-3", name: "Sarah", hand: [], trios: [] },
-    { id: "player-4", name: "Josh", hand: [], trios: [] }
-];
-game.currentPlayerID = "player-1"
-game.status = "playing"
+// game.players = [
+//     { id: "player-1", name: "Carlos", hand: [
+//     { id: 7, value: 7 },
+//     { id: 9, value: 7 },
+//     { id: 10, value: 4 },
+//     { id: 24, value: 4 },
+//     { id: 23, value: 5 },
+//     { id: 31, value: 5 }], trios: [] },
+//     { id: "player-2", name: "David", hand: [
+//         { id: 1, value: 1 },
+//         { id: 2, value: 2 },
+//         { id: 3, value: 3 },
+//         { id: 4, value: 6 },
+//         { id: 5, value: 8 },
+//         { id: 6, value: 9 }
+//     ], trios: [] },
+//     { id: "player-3", name: "Sarah", hand: [], trios: [] },
+//     { id: "player-4", name: "Josh", hand: [], trios: [] }
+// ];
+// game.currentPlayerID = "player-1"
+// game.status = "playing"
 
 // const deck = createDeck();
 // game.center = dealCards(deck, game.players);
 
-game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
-console.log("Status:", game.status);
-console.log("Current player:", game.currentPlayerID);
-console.log("Players:", game.players);
-console.log("Center:", game.center);
+// game.center = [{ id: 8, value: 7 },{ id: 11, value: 4 },{ id: 32, value: 5 }]
+// console.log("Status:", game.status);
+// console.log("Current player:", game.currentPlayerID);
+// console.log("Players:", game.players);
+// console.log("Center:", game.center);
+
 // console.log(game.center)
 // console.log(game.players[0]);
 // console.log(revealCard("player-1","player",{playerId: "player-1",position: "lowest"}));
