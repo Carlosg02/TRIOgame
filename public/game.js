@@ -9,16 +9,83 @@ async function getGameState(){
     return data;
 }
 
+async function revealCenterCard(cardId){
+    const playerId = sessionStorage.getItem("playerId");
+    const response = await fetch("/api/game/reveal", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            actingPlayerId: playerId,
+            source: "center",
+            options: {
+                cardId: cardId
+            }
+        })
+    });
+    const data = await response.json();
 
+    // console.log("Reveal response:", data);
+
+    // if (response.ok){
+    //     const state = await getGameState();
+    //     console.log("State immediately after reveal:", state);
+    //     updateGame();
+    // }
+    if (response.ok){
+        updateGame();
+    }
+}
+
+async function revealPlayerCard(targetPlayerId, position){
+    const playerId = sessionStorage.getItem("playerId");
+    const response = await fetch("/api/game/reveal",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            actingPlayerId: playerId,
+            source: "player",
+            options: {
+                playerId: targetPlayerId,
+                position: position
+            }
+        })
+    });
+    const data = await response.json();
+    console.log(data);
+    if (response.ok){
+        updateGame();
+    }
+}
 
 function displayHand(gamestate){
     const playerHandArea = document.getElementById("player-hand");
+    const playerId = sessionStorage.getItem("playerId");
     playerHandArea.textContent = "";
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
         cardButton.textContent = card.value;
         playerHandArea.appendChild(cardButton);
     });
+
+    const lowButton = document.createElement("button");
+    const highButton = document.createElement("button");
+    lowButton.textContent = "Reveal Lowest";
+    highButton.textContent = "Reveal Highest";
+    lowButton.addEventListener("click", async function(){
+        await revealPlayerCard(playerId, "lowest");
+    });
+    highButton.addEventListener("click", async function(){
+        await revealPlayerCard(playerId, "highest");
+    });
+
+    playerHandArea.appendChild(lowButton);
+    playerHandArea.appendChild(highButton);
+
+
 }
 
 function displayTurn(gamestate){
@@ -43,16 +110,29 @@ function displayPlayers(gamestate){
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
         const revealedCardsSection = document.createElement("p");
+        const lowButton = document.createElement("button");
+        const highButton = document.createElement("button");
         nameSection.textContent = player.name;
         cardCountSection.textContent = "Cards: " + player.cardCount;
         trioSection.textContent = "Trios: " + player.trios.join(", ");
         const revealedValues = player.revealedCards.map((card) => card.value);
         revealedCardsSection.textContent = "Revealed Cards: " + revealedValues.join(", ");
+        lowButton.textContent = "Reveal Lowest";
+        highButton.textContent = "Reveal Highest";
+        lowButton.addEventListener("click", async function(){
+            await revealPlayerCard(player.id, "lowest");
+        });
+        highButton.addEventListener("click", async function(){
+            await revealPlayerCard(player.id, "highest");
+        });
         playerSection.appendChild(nameSection);
         playerSection.appendChild(cardCountSection);
         playerSection.appendChild(trioSection);
         playerSection.appendChild(revealedCardsSection);
+        playerSection.appendChild(lowButton);
+        playerSection.appendChild(highButton);
         playersArea.appendChild(playerSection);
+
     });
 }
 
@@ -61,6 +141,9 @@ function displayCenter(gamestate){
     centerSection.textContent = "";
     gamestate.center.forEach((card) => {
         const cardButton = document.createElement("button");
+        cardButton.addEventListener("click", async function(){
+            await revealCenterCard(card.id);
+        });
         if (card.revealed){
             cardButton.textContent = card.value;
         }else{
@@ -80,3 +163,7 @@ async function updateGame(){
 }
 
 updateGame();
+
+setInterval(() =>{
+    updateGame();
+},1000);

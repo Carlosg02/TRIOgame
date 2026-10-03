@@ -17,9 +17,10 @@ const game = {
     currentPlayerID: null,
     winnerID: null,
     turn: {
-        revealedCards: []
+        revealedCards: [],
+        locked: false
     }
-
+    
 };
 
 const cardsPerPlayer = {
@@ -109,7 +110,7 @@ function getPlayerCard(playerId, position){
         return availableCards[0];
     }
     if(position === "highest"){
-        return availableCards[availableCards - 1];
+        return availableCards[availableCards.length - 1];
     }
     return undefined;
 }
@@ -175,6 +176,7 @@ function continueReveal(){
 }
 
 function endTurn(){
+    game.turn.locked = false;
     game.turn.revealedCards = [];
     advanceTurn();
 }
@@ -238,13 +240,22 @@ function revealResults(){
     const turnResult = continueReveal();
 
     if (turnResult === "End Turn"){
-        endTurn();
+        game.turn.locked = true;
+        setTimeout(() =>{
+            endTurn();
+        }, 3000);
     }else if(turnResult === "TRIO"){
         collectTrio();
     }
 }
 
 function revealCard(actingPlayerId, source, options){
+    if(game.turn.locked){
+        return{
+            success:false,
+            message: "Please wait for current turn to finish:"
+        }
+    }
     if(game.status !== "playing"){
         return {
             success: false,
