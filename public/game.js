@@ -1,4 +1,7 @@
-
+/**
+ * Aquires the current game state from the server to provide the client with updated information about the game
+ * @returns Disctionary containing important game state variable and informatio.
+ */
 async function getGameState(){
     const playerId = sessionStorage.getItem("playerId");
     if (playerId === null){
@@ -8,7 +11,10 @@ async function getGameState(){
     const data = await response.json();
     return data;
 }
-
+/**
+ * Sends post request to server to reveal the chosen card from the center of table.
+ * @param {*} cardId  - Id of the card to be revealed from center.
+ */
 async function revealCenterCard(cardId){
     const playerId = sessionStorage.getItem("playerId");
     const response = await fetch("/api/game/reveal", {
@@ -26,18 +32,16 @@ async function revealCenterCard(cardId){
     });
     const data = await response.json();
 
-    // console.log("Reveal response:", data);
-
-    // if (response.ok){
-    //     const state = await getGameState();
-    //     console.log("State immediately after reveal:", state);
-    //     updateGame();
-    // }
     if (response.ok){
         updateGame();
     }
 }
-
+/**
+ * Sends post request to server to reveal either the lowest or highest card from the target player.
+ * @param {*} targetPlayerId - Id of the player whose card will be revealed
+ * @param {*} position  - Either lowest or highest. Pertaining to which card will be revealed from player hand
+ * Automatically update front end after receiving response
+ */
 async function revealPlayerCard(targetPlayerId, position){
     const playerId = sessionStorage.getItem("playerId");
     const response = await fetch("/api/game/reveal",{
@@ -64,7 +68,7 @@ async function revealPlayerCard(targetPlayerId, position){
 function displayHand(gamestate){
     const playerHandArea = document.getElementById("player-hand");
     const playerId = sessionStorage.getItem("playerId");
-    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
     playerHandArea.textContent = "";
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
@@ -107,18 +111,19 @@ function displayTurn(gamestate){
 function displayPlayers(gamestate){
     const playersArea = document.getElementById("players");
     const playerId = sessionStorage.getItem("playerId");
-    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
     playersArea.textContent = "";
     gamestate.players.forEach((player) => {
+        const availableCardCount = player.cardCount - player.revealedCards.length;
         const playerSection = document.createElement("div");
         const nameSection = document.createElement("p");
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
         const revealedCardsSection = document.createElement("p");
         const lowButton = document.createElement("button");
-        lowButton.disabled = !canReveal;
+        lowButton.disabled = !canReveal || (availableCardCount === 0);
         const highButton = document.createElement("button");
-        highButton.disabled = !canReveal;
+        highButton.disabled = !canReveal || (availableCardCount === 0);
         nameSection.textContent = player.name;
         cardCountSection.textContent = "Cards: " + player.cardCount;
         trioSection.textContent = "Trios: " + player.trios.join(", ");
@@ -146,7 +151,7 @@ function displayPlayers(gamestate){
 function displayCenter(gamestate){
     const centerSection = document.getElementById("center-cards");
     const playerId = sessionStorage.getItem("playerId");
-    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
     centerSection.textContent = "";
     gamestate.center.forEach((card) => {
         const cardButton = document.createElement("button");

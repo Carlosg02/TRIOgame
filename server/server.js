@@ -222,15 +222,16 @@ function collectTrio(){
 
     player.trios.push(trioValue);
 
+    game.turn.revealedCards.forEach((card)=>{
+        removeRevealedCard(card);
+    })
+    game.turn.revealedCards = [];
+
+    game.turn.locked = false;
+
     if(checkWinner(player)){
         endGame();
     }else{
-        game.turn.revealedCards.forEach((card)=>{
-            removeRevealedCard(card);
-        })
-
-        game.turn.revealedCards = [];
-
         advanceTurn();
     }
 
@@ -243,9 +244,12 @@ function revealResults(){
         game.turn.locked = true;
         setTimeout(() =>{
             endTurn();
-        }, 3000);
+        }, 2500);
     }else if(turnResult === "TRIO"){
-        collectTrio();
+        game.turn.locked = true;
+        setTimeout(() =>{
+            collectTrio();
+        }, 2500)
     }
 }
 
