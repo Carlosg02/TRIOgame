@@ -9,13 +9,29 @@
 <body>
     <main class="lobby">
         <h1>TRIO Host Lobby</h1>
+
+        <section class="player-selection">
+            <h2>Number of Players</h2>
+
+            <button class="lobby-button">3 Players</button>
+            <button class="lobby-button">4 Players</button>
+            <button class="lobby-button">5 Players</button>
+            <button class="lobby-button">6 Players</button>
+
+            <p id="selection-message"></p>
+
+        </section>
+
         <section class="connected-players">
             <h2>Connected Players</h2>
 
             <ul id="player-list"></ul>
         </section>
 
-        <script src="host.js"></script>
+        <button id="start-game-button">Start Game</button>
+        <p id="start-message"></p>
+
+        
     </main>
-    <script src="script.js"></script>
+    <script src="host.js"></script>
 </body>

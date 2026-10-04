@@ -41,3 +41,19 @@ async function getGameState(){
     const data = await response.json();
     console.log(data);
 }
+
+async function checkGameStatus(){
+    const playerId = sessionStorage.getItem("playerId");
+    if (playerId === null){
+        return;
+    }
+    const response = await fetch("/api/game/status");
+    const data = await response.json();
+    if (data.status === "playing"){
+        window.location.href = "game.html";
+    }
+}
+
+setInterval(() => {
+    checkGameStatus();
+}, 1000);

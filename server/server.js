@@ -435,27 +435,29 @@ app.get("/api/players", (req, res) => {
 
 //This endpoint is for selecting the amount of players when begginning the game
 app.post("/api/game", (req,res) => {
-    const playerCount = req.body.playerCount;
+    const startingPlayerId = req.body.startingPlayerId;
 
-    if (playerCount >= 3 && playerCount <=  6) {
-        game.maxPlayers = playerCount;
-        if(game.players.length === game.maxPlayers){
-            startGame();
-            
-            res.status(200).json({
-                message: "Starting game with " + game.maxPlayers + " players!"
-            })
-        }else{
-            res.status(400).json({
-                message: "Not all players have joined"
-            })
-        }
-        
-    }else{
-        res.status(400).json({
-            message: "Invalid player count"
+    if (game.players.length !== game.maxPlayers){
+        return res.status(400).json({
+            message: "Not all players have joined"
         });
     }
+
+    const checkStartingPlayer = game.players.find((player) => {
+        return player.id === startingPlayerId;
+    })
+
+    if (checkStartingPlayer === undefined){
+        return res.status(400).json({
+            message: "Invalid starting player"
+        });
+    }
+
+    setStartingPlayer(startingPlayerId);
+    startGame();
+    return res.status(200).json({
+        message: "Game started successfully!"
+    });
 });
 
 app.post("/api/game/reveal",(req,res)=>{
@@ -479,9 +481,6 @@ app.post("/api/game/reveal",(req,res)=>{
     
 })
 
-app.listen(PORT, () => {
-    console.log('Server is running on port ' + PORT)
-})
 
 app.get("/api/game/player/:playerId", (req,res)=>{
     const playerId = req.params.playerId;
@@ -493,6 +492,31 @@ app.get("/api/game/player/:playerId", (req,res)=>{
         })
     }
     return res.status(200).json(result);
+})
+
+app.get("/api/game/status", (req,res) => {
+    return res.status(200).json({
+        status: game.status
+    })
+})
+
+app.post("/api/game/configure", (req,res) =>{
+    const playerCount = req.body.playerCount;
+
+    if (playerCount >= 3 && playerCount <=  6) {
+        game.maxPlayers = playerCount;
+        return res.status(200).json({
+            message: "You have selected " + game.maxPlayers + " players!"
+        });
+    }else{
+        return res.status(400).json({
+            message: "Invalid player count"
+        });
+    }
+})
+
+app.listen(PORT, () => {
+    console.log('Server is running on port ' + PORT)
 })
 
 
