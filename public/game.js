@@ -98,6 +98,18 @@ function displayHand(gamestate){
 function displayTurn(gamestate){
     const turnMessageArea = document.getElementById("turn-message");
     const player = sessionStorage.getItem("playerId");
+    if (gamestate.status === "finished"){
+        if (gamestate.winnerID === player){
+            turnMessageArea.textContent = "You won!";
+        }else{
+            const winner = gamestate.players.find((player)=>{
+                return player.id === gamestate.winnerID;
+            });
+            turnMessageArea.textContent = winner.name + " won!";
+        }
+        return;
+    }
+
     if (player === gamestate.currentPlayerID){
         turnMessageArea.textContent = "Your turn";
     }else{
