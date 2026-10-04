@@ -364,7 +364,8 @@ function getPlayerGameState(playerId){
         hand: currPlayer.hand,
         trios: currPlayer.trios,
         players: publicPlayers,
-        center: publicCenter
+        center: publicCenter,
+        turnLocked: game.turn.locked
     }
 }
 

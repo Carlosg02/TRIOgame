@@ -64,6 +64,7 @@ async function revealPlayerCard(targetPlayerId, position){
 function displayHand(gamestate){
     const playerHandArea = document.getElementById("player-hand");
     const playerId = sessionStorage.getItem("playerId");
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
     playerHandArea.textContent = "";
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
@@ -72,7 +73,9 @@ function displayHand(gamestate){
     });
 
     const lowButton = document.createElement("button");
+    lowButton.disabled = !canReveal;
     const highButton = document.createElement("button");
+    highButton.disabled = !canReveal;
     lowButton.textContent = "Reveal Lowest";
     highButton.textContent = "Reveal Highest";
     lowButton.addEventListener("click", async function(){
@@ -103,6 +106,8 @@ function displayTurn(gamestate){
 
 function displayPlayers(gamestate){
     const playersArea = document.getElementById("players");
+    const playerId = sessionStorage.getItem("playerId");
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
     playersArea.textContent = "";
     gamestate.players.forEach((player) => {
         const playerSection = document.createElement("div");
@@ -111,7 +116,9 @@ function displayPlayers(gamestate){
         const trioSection = document.createElement("p");
         const revealedCardsSection = document.createElement("p");
         const lowButton = document.createElement("button");
+        lowButton.disabled = !canReveal;
         const highButton = document.createElement("button");
+        highButton.disabled = !canReveal;
         nameSection.textContent = player.name;
         cardCountSection.textContent = "Cards: " + player.cardCount;
         trioSection.textContent = "Trios: " + player.trios.join(", ");
@@ -138,9 +145,12 @@ function displayPlayers(gamestate){
 
 function displayCenter(gamestate){
     const centerSection = document.getElementById("center-cards");
+    const playerId = sessionStorage.getItem("playerId");
+    const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked);
     centerSection.textContent = "";
     gamestate.center.forEach((card) => {
         const cardButton = document.createElement("button");
+        cardButton.disabled = !canReveal || card.revealed;
         cardButton.addEventListener("click", async function(){
             await revealCenterCard(card.id);
         });
