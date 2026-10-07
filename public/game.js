@@ -9,6 +9,12 @@ async function getGameState(){
     }
     const response = await fetch(`/api/game/player/${playerId}`);
     const data = await response.json();
+
+    if(response.status === 404){
+        sessionStorage.removeItem("playerId");
+        window.location.href = "join.html";
+        return;
+    }
     return data;
 }
 /**
@@ -180,13 +186,45 @@ function displayCenter(gamestate){
     })
 }
 
+const newGameButton = document.querySelector("#new-game-button");
+newGameButton.addEventListener("click", async function(){
+    const playerId = sessionStorage.getItem("playerId");
+    const response = await fetch("/api/game/reset",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            playerId: playerId
+        })
+    });
+    if (response.ok){
+        sessionStorage.removeItem("playerId");
+        window.location.href = "host.html";
+    }
+})
+
+function displayNewGameButton(gamestate){
+    
+    if ( gamestate.status === "finished" && gamestate.hostPlayerID === sessionStorage.getItem("playerId")){
+        newGameButton.hidden = false;
+        return;
+    }
+    newGameButton.hidden = true;
+
+}
+
 async function updateGame(){
     const gameState = await getGameState();
+
+    if (gameState === undefined){
+        return;
+    }
     displayCenter(gameState);
     displayTurn(gameState);
     displayHand(gameState);
     displayPlayers(gameState);
-    
+    displayNewGameButton(gameState);
 }
 
 updateGame();

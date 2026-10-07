@@ -16,6 +16,7 @@ const game = {
     center: [],
     currentPlayerID: null,
     winnerID: null,
+    hostPlayerID: null,
     turn: {
         revealedCards: [],
         locked: false
@@ -369,8 +370,21 @@ function getPlayerGameState(playerId){
         trios: currPlayer.trios,
         players: publicPlayers,
         center: publicCenter,
-        turnLocked: game.turn.locked
+        turnLocked: game.turn.locked,
+        hostPlayerID: game.hostPlayerID
     }
+}
+
+function resetGame(){
+    game.players = [];
+    game.maxPlayers = 0;
+    game.status = "lobby";
+    game.center = [];
+    game.currentPlayerID = null;
+    game.winnerID = null;
+    game.hostPlayerID = null;
+    game.turn.revealedCards = [];
+    game.turn.locked = false;
 }
 
 ////------------------End Points ---------------------------------
@@ -413,6 +427,10 @@ app.post("/api/players", (req, res) => {
     }
     
     game.players.push(newPlayer);
+
+    if (game.players.length === 1){
+        game.hostPlayerID = newPlayer.id;
+    }
 
 
     res.status(201).json({
@@ -513,6 +531,22 @@ app.post("/api/game/configure", (req,res) =>{
             message: "Invalid player count"
         });
     }
+})
+
+app.post("/api/game/reset", (req,res) => {
+    const playerId = req.body.playerId;
+
+    if ( playerId === game.hostPlayerID){
+        resetGame();
+
+        return res.status(200).json({
+            message: "Game has been reset"
+        });
+    }
+
+    return res.status(403).json({
+        message: "Only the host can reset the game"
+    });
 })
 
 app.listen(PORT, () => {
