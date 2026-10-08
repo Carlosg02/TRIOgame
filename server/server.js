@@ -521,16 +521,28 @@ app.get("/api/game/status", (req,res) => {
 app.post("/api/game/configure", (req,res) =>{
     const playerCount = req.body.playerCount;
 
-    if (playerCount >= 3 && playerCount <=  6) {
-        game.maxPlayers = playerCount;
-        return res.status(200).json({
-            message: "You have selected " + game.maxPlayers + " players!"
-        });
-    }else{
+    if (game.status !== "lobby"){
+        return res.status(409).json({
+            message: "Cannot configure a game that has already started"
+        })
+    }
+
+    if(!Number.isInteger(playerCount) || playerCount < 3 || playerCount >6){
         return res.status(400).json({
             message: "Invalid player count"
         });
     }
+
+    if (playerCount < game.players.length){
+        return res.status(400).json({
+            message: "Cannot select fewer players than the amount already connected"
+        })
+    }
+
+    game.maxPlayers = playerCount;
+    return res.status(200).json({
+        message: "You have selected " + game.maxPlayers + " players!"
+    });
 })
 
 app.post("/api/game/reset", (req,res) => {

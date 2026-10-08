@@ -20,23 +20,32 @@ lobbyButtons.forEach(function(button){
             return;
         }
 
-        lobbyButtons.forEach(function(btn) {
-            btn.style.backgroundColor = "";
-        });
-
-        playerCount = parseInt(button.textContent)
-        selectionMessage.textContent ="You have selected " + playerCount +" players!"
-        button.style.backgroundColor = "#A6B1BA"
-
+        const selectedCount = parseInt(button.textContent);
+        
         const responseConfig = await fetch("/api/game/configure",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                playerCount: playerCount
+                playerCount: selectedCount
             })
         });
+
+        const dataConfig = await responseConfig.json();
+
+        if(responseConfig.ok){
+            playerCount = selectedCount;
+            selectionMessage.textContent = dataConfig.message;
+            
+            lobbyButtons.forEach(function(btn){
+                btn.style.backgroundColor = "";
+            })
+
+            button.style.backgroundColor = "#A6B1BA"
+        }else{
+            selectionMessage.textContent = dataConfig.message;
+        }
 
         if (responseConfig.ok && hostPlayerId === null){
             const responsePlayer = await fetch("/api/players",{
