@@ -47,7 +47,14 @@ lobbyButtons.forEach(function(button){
             selectionMessage.textContent = dataConfig.message;
         }
 
-        if (responseConfig.ok && hostPlayerId === null){
+        const playersResponse = await fetch("/api/players");
+        const playersData = await playersResponse.json();
+
+        const hostAlreadyJoined = playersData.players.some((player) => {
+            return player.id === hostPlayerId;
+        });
+
+        if (responseConfig.ok && !hostAlreadyJoined){
             const responsePlayer = await fetch("/api/players",{
                 method: "POST",
                 headers: {

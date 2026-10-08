@@ -4,7 +4,9 @@
  */
 async function getGameState(){
     const playerId = sessionStorage.getItem("playerId");
+    
     if (playerId === null){
+        window.location.href = "join.html";
         return;
     }
     const response = await fetch(`/api/game/player/${playerId}`);

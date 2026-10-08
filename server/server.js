@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const { randomUUID } = require("node:crypto")
 
 const app = express();
 
@@ -391,6 +392,12 @@ function resetGame(){
 
 //Endpoint for players joining the game and validating names
 app.post("/api/players", (req, res) => {
+    if (game.status !== "lobby"){
+        return res.status(409).json({
+            message: "Cannot join game after lobby has closed"
+        })
+    }
+
     const playerName = req.body.name?.trim();
     if (!playerName){//Makes sure that the player name isnt empty
         return res.status(400).json({
@@ -420,7 +427,7 @@ app.post("/api/players", (req, res) => {
     }
 
     const newPlayer = {
-        id: "player-" + (game.players.length + 1),
+        id: randomUUID(),
         name: playerName,
         hand: [],
         trios: []
@@ -446,14 +453,27 @@ app.post("/api/players", (req, res) => {
 
 //Endpoint to retrieve all current players
 app.get("/api/players", (req, res) => {
+    const publicPlayers = game.players.map((player) => {
+        return{
+            id: player.id,
+            name: player.name
+        }
+    })
+    
     res.json({
-        players: game.players
+        players: publicPlayers
     });
 });
 
 //This endpoint is for selecting the amount of players when begginning the game
 app.post("/api/game", (req,res) => {
     const startingPlayerId = req.body.startingPlayerId;
+
+    if (game.status !== "lobby"){
+        return res.status(409).json({
+            message: "Game has already started"
+        })
+    }
 
     if (game.players.length !== game.maxPlayers){
         return res.status(400).json({
@@ -548,16 +568,22 @@ app.post("/api/game/configure", (req,res) =>{
 app.post("/api/game/reset", (req,res) => {
     const playerId = req.body.playerId;
 
-    if ( playerId === game.hostPlayerID){
-        resetGame();
-
-        return res.status(200).json({
-            message: "Game has been reset"
+     if ( playerId !== game.hostPlayerID){
+        return res.status(403).json({
+            message: "Only the host can reset the game"
         });
     }
+    
+    if (game.status !== "finished"){
+        return res.status(409).json({
+            message: "Cannot reset, game has not finished"
+        })
+    }
 
-    return res.status(403).json({
-        message: "Only the host can reset the game"
+    resetGame();
+
+    return res.status(200).json({
+        message: "Game has been reset"
     });
 })
 
