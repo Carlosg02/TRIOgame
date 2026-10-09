@@ -3,9 +3,22 @@ const playerNameInput = document.querySelector("#player-name");
 const joinMessage = document.querySelector("#join-message");
 
 joinButton.addEventListener("click", async function(){
+    const statusResponse = await fetch("/api/game/status");
+    const statusData = await statusResponse.json();
+
+    console.log("Current Game status:", statusData.status);
+
+    let endpoint;
+
+    if (statusData.status !== "lobby"){
+        endpoint = "/api/players/reconnect";
+    }else{
+        endpoint = "/api/players";
+    }
+
     const playerName = playerNameInput.value.trim();
     if (playerName) {
-        const response = await fetch("/api/players",{
+        const response = await fetch(endpoint,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -17,8 +30,20 @@ joinButton.addEventListener("click", async function(){
 
         const data = await response.json();
 
-        if (response.ok){
-            sessionStorage.setItem("playerId", data.player.id);
+        if (response.ok) {
+            let playerId;
+
+            if (endpoint === "/api/players/reconnect") {
+                playerId = data.id;
+            } else {
+                playerId = data.player.id;
+            }
+
+            sessionStorage.setItem("playerId", playerId);
+            if (endpoint === "/api/players/reconnect") {
+                window.location.href = "game.html";
+                return;
+            }
         }
 
         joinMessage.textContent = data.message;

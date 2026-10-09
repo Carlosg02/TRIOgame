@@ -587,6 +587,33 @@ app.post("/api/game/reset", (req,res) => {
     });
 })
 
+app.post("/api/players/reconnect", (req,res) =>{
+    if (typeof req.body.name !== "string" || !req.body.name.trim()){
+        return res.status(400).json({
+            message: "Please provide a valid player name"
+        })
+    }
+
+    const playerName = req.body.name.trim();
+
+    const playerFound = game.players.find((player) =>{
+        return player.name.toLowerCase() === playerName.toLowerCase();
+    })
+
+    if ( playerFound === undefined){
+        return res.status(404).json({
+            message:  "Player Not Found"
+        })
+    }
+
+    return res.status(200).json({
+        id: playerFound.id,
+        name: playerFound.name,
+        message: "Player reconnected successfully"
+    })
+
+})
+
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT)
 })
