@@ -1,14 +1,297 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
+:root {
+    --color-background: #FFF8ED;
+    --color-surface: #FFFFFF;
+    --color-text: #29233D;
+    --color-muted: #756E82;
+
+    --color-primary: #FF6B6B;
+    --color-secondary: #39C6B4;
+    --color-highlight: #FFD166;
+    --color-purple: #A78BFA;
+
+    --radius-card: 18px;
+    --radius-button: 12px;
+
+    --shadow-card: 0 4px 12px rgba(41, 35, 61, 0.10);
 }
 
-h1 {
-    color: #1f2937;
+/* Global page styling */
+body {
+    background-color: #A9DCD5;
+    background-image: radial-gradient(
+        ellipse at center,
+        #C8EAE4 0%,
+        #A9DCD5 75%,
+        #8BC9BF 100%
+    );
+    color: var(--color-text);
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Consistent box sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Main page headings */
+h1, h2, h3 {
+    color: var(--color-text);
+    margin-top: 0;
+}
+
+/* General panel styling */
+.panel {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+}
+
+/* Primary buttons */
+button {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-button);
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Small interaction feedback */
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(41, 35, 61, 0.15);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .lobby{
     max-width: 600px;
     margin: 0 auto;
+}
+
+
+/* Main game screen */
+.player-screen {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+    padding: 24px 0 40px;
+}
+
+/* Game title */
+.player-screen h1 {
+    text-align: center;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    letter-spacing: 4px;
+    color: var(--color-text);
+    margin-bottom: 20px;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Turn message */
+#turn-message {
+    background-color: var(--color-highlight);
+    border-radius: var(--radius-card);
+    padding: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: var(--shadow-card);
+    min-height: 24px;
+}
+
+/* Game sections */
+#player-hand,
+#players,
+#center-cards {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+
+/* Individual opponent cards */
+.opponent-card {
+    background-color: #FFF8ED;
+    border: 2px solid #E9E2F2;
+    border-radius: var(--radius-card);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+/* Opponent name */
+.opponent-card p:first-child {
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Opponent details */
+.opponent-card p:not(:first-child) {
+    color: var(--color-muted);
+    margin: 8px 0;
+}
+
+/* Buttons inside opponent cards */
+.opponent-card button {
+    margin: 6px 6px 0 0;
+}
+
+
+/* Layout for the cards in your hand */
+#player-hand {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Individual game cards */
+.game-card {
+    width: 90px;
+    height: 130px;
+    flex-shrink: 0;
+    background-color: #FFFFFF;
+    color: var(--color-text);
+    border: 2px solid #E9E2F2;
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+/* Small hover effect for cards */
+.game-card:hover:not(:disabled) {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(41, 35, 61, 0.18);
+}
+
+/* Center playing area */
+#center-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    min-height: 170px;
+}
+
+/* Face-down center cards */
+#center-cards .face-down-card {
+    background-color: var(--color-secondary);
+    color: white;
+    border-color: var(--color-secondary);
+    cursor: default;
+}
+
+/* Revealed center cards */
+#center-cards .revealed-card {
+    background-color: white;
+    color: var(--color-text);
+    border-color: var(--color-highlight);
+}
+
+/* Keep revealed center cards bright even when they cannot be clicked */
+#center-cards .revealed-card:disabled {
+    opacity: 1;
+    background-color: #FFFFFF;
+    color: var(--color-text);
+    border-color: var(--color-highlight);
+    cursor: default;
+}
+
+/* Keep the game content above the background */
+.player-screen {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Shared tabletop */
+.game-table {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 20px;
+    align-items: stretch;
+    background-color: rgba(39, 133, 104, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 28px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* Opponents area */
+#players {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+/* Center of the table */
+.center-area {
+    background-color: rgba(39, 133, 104, 0.35);
+    border-radius: 20px;
+    padding: 20px;
+    min-width: 0;
+}
+
+.center-area h2,
+.hand-area h2 {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+/* Your hand area */
+.hand-area {
+    background-color: rgba(255, 255, 255, 0.65);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 24px;
+    padding: 20px;
+}
+
+/* Remove the old panel spacing from nested sections */
+.center-area #center-cards {
+    margin-bottom: 0;
+    box-shadow: none;
+    background-color: transparent;
+    padding: 8px 0;
+}
+
+.hand-area #player-hand {
+    margin-bottom: 0;
+    box-shadow: none;
+    background-color: transparent;
+    padding: 8px 0;
+}
+
+/* Stack the areas on narrow screens */
+@media (max-width: 650px) {
+    .game-table {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .center-area {
+        padding: 14px;
+    }
+
+    .hand-area {
+        padding: 14px;
+    }
 }

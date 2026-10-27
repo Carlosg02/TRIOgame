@@ -10,9 +10,20 @@
     <main class="player-screen">
         <h1>TRIO</h1>
         <section id="turn-message"></section>
-        <section id="player-hand"></section>
-        <section id="players"></section>
-        <section id="center-cards"></section>
+        
+        <div class="game-table">
+            <section id="players"></section>
+
+            <section class="center-area">
+                <h2>Center Cards</h2>
+                <section id="center-cards"></section>
+            </section>
+        </div>
+
+        <section class="hand-area">
+            <h2>Your Hand</h2>
+            <section id="player-hand"></section>
+        </section>
         <button id="new-game-button" hidden>New Game</button>
     </main>
     <script src="game.js"></script>

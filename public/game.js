@@ -81,6 +81,7 @@ function displayHand(gamestate){
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
         cardButton.textContent = card.value;
+        cardButton.classList.add("game-card");
         playerHandArea.appendChild(cardButton);
     });
 
@@ -133,9 +134,12 @@ function displayPlayers(gamestate){
     const playerId = sessionStorage.getItem("playerId");
     const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
     playersArea.textContent = "";
-    gamestate.players.forEach((player) => {
+    gamestate.players
+    .filter((player) => player.id !== playerId)
+    .forEach((player) => {
         const availableCardCount = player.cardCount - player.revealedCards.length;
         const playerSection = document.createElement("div");
+        playerSection.classList.add("opponent-card");
         const nameSection = document.createElement("p");
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
@@ -175,14 +179,17 @@ function displayCenter(gamestate){
     centerSection.textContent = "";
     gamestate.center.forEach((card) => {
         const cardButton = document.createElement("button");
+        cardButton.classList.add("game-card");
         cardButton.disabled = !canReveal || card.revealed;
         cardButton.addEventListener("click", async function(){
             await revealCenterCard(card.id);
         });
         if (card.revealed){
             cardButton.textContent = card.value;
+            cardButton.classList.add("revealed-card");
         }else{
             cardButton.textContent = "?";
+            cardButton.classList.add("face-down-card");
         }
         centerSection.appendChild(cardButton);
     })
