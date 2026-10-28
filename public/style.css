@@ -220,33 +220,124 @@ button:disabled {
 }
 
 
-/* Shared tabletop */
+/* =================================
+   TABLETOP LAYOUT
+   ================================= */
+
 .game-table {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: 20px;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "center";
+    align-items: center;
+    justify-items: center;
+    min-height: 820px;
+    padding: 24px;
+    margin-bottom: 24px;
     background-color: rgba(39, 133, 104, 0.18);
     border: 2px solid rgba(255, 255, 255, 0.6);
     border-radius: 28px;
-    padding: 24px;
-    margin-bottom: 24px;
+    overflow: visible;
 }
 
-/* Opponents area */
+/* Opponent seating layer */
 #players {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 0;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    pointer-events: none;
 }
 
-/* Center of the table */
+/* Individual opponent cards */
+.opponent-card {
+    position: absolute;
+    width: 180px;
+    max-width: calc(100% - 16px);
+    min-width: 0;
+    padding: 10px;
+    margin: 0;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    background-color: rgba(255, 248, 237, 0.96);
+    box-shadow: 0 3px 8px rgba(41, 35, 61, 0.08);
+    font-size: 0.9rem;
+    pointer-events: auto;
+}
+
+/* Opponent names */
+.opponent-card p:first-child {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+/* Opponent details */
+.opponent-card p:not(:first-child) {
+    margin: 8px 0;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+}
+
+/* Opponent action buttons */
+.opponent-card button {
+    max-width: 100%;
+    padding: 8px 10px;
+    margin: 4px 4px 0 0;
+    font-size: 0.8rem;
+}
+
+/* Seat 1: upper left */
+.opponent-position-1 {
+    top: 30%;
+    left: 40px;
+}
+
+/* Seat 2: top center */
+.opponent-position-2 {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+/* Seat 3: upper right */
+.opponent-position-3 {
+    top: 30%;
+    right: 40px;
+}
+
+/* Seat 4: lower left */
+.opponent-position-4 {
+    top: 62%;
+    left: 40px;
+}
+
+/* Seat 5: lower right */
+.opponent-position-5 {
+    top: 62%;
+    right: 40px;
+}
+
+/* Central playing area */
 .center-area {
+    grid-area: center;
+    position: relative;
+    z-index: 1;
+    width: 44%;
+    min-width: 0;
+    margin: 0;
+    padding: 20px;
+    align-self: center;
+    justify-self: center;
     background-color: rgba(39, 133, 104, 0.35);
     border-radius: 20px;
-    padding: 20px;
-    min-width: 0;
+    transform: translateY(80px);
 }
 
 .center-area h2,
@@ -256,42 +347,109 @@ button:disabled {
     margin-bottom: 16px;
 }
 
-/* Your hand area */
+/* Center cards */
+.center-area #center-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    min-height: 170px;
+    padding: 8px 0;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Keep revealed cards visible */
+#center-cards .revealed-card:disabled {
+    opacity: 1;
+    background-color: #FFFFFF;
+    color: var(--color-text);
+    border-color: var(--color-highlight);
+    cursor: default;
+}
+
+/* Player's hand */
 .hand-area {
+    padding: 20px;
     background-color: rgba(255, 255, 255, 0.65);
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 24px;
-    padding: 20px;
-}
-
-/* Remove the old panel spacing from nested sections */
-.center-area #center-cards {
-    margin-bottom: 0;
-    box-shadow: none;
-    background-color: transparent;
-    padding: 8px 0;
 }
 
 .hand-area #player-hand {
-    margin-bottom: 0;
-    box-shadow: none;
-    background-color: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
     padding: 8px 0;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
-/* Stack the areas on narrow screens */
-@media (max-width: 650px) {
+/* Tablet and phone layout */
+@media (max-width: 800px) {
     .game-table {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        align-items: stretch;
+        gap: 16px;
         padding: 14px;
-        gap: 14px;
+    }
+
+    /* Return opponents to normal document flow */
+    #players {
+        position: static;
+        inset: auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0;
+        order: 2;
+        pointer-events: auto;
+    }
+
+    .opponent-card {
+        position: static;
+        width: 100%;
+        max-width: none;
+        transform: none;
     }
 
     .center-area {
+        width: 100%;
         padding: 14px;
+        order: 1;
+    }
+
+    .opponent-position-1,
+    .opponent-position-2,
+    .opponent-position-3,
+    .opponent-position-4,
+    .opponent-position-5 {
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
     }
 
     .hand-area {
         padding: 14px;
     }
 }
+
+@media (max-width: 420px) {
+    #players {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .game-card {
+        width: 72px;
+        height: 108px;
+    }
+}
+

@@ -136,10 +136,11 @@ function displayPlayers(gamestate){
     playersArea.textContent = "";
     gamestate.players
     .filter((player) => player.id !== playerId)
-    .forEach((player) => {
+    .forEach((player,index) => {
         const availableCardCount = player.cardCount - player.revealedCards.length;
         const playerSection = document.createElement("div");
         playerSection.classList.add("opponent-card");
+        playerSection.classList.add(`opponent-position-${index + 1}`);
         const nameSection = document.createElement("p");
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
