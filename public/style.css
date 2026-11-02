@@ -256,7 +256,7 @@ button:disabled {
 /* Individual opponent cards */
 .opponent-card {
     position: absolute;
-    width: 180px;
+    width: 220px;
     max-width: calc(100% - 16px);
     min-width: 0;
     padding: 10px;
@@ -292,10 +292,69 @@ button:disabled {
     font-size: 0.8rem;
 }
 
+.opponent-hand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.opponent-hand .game-card {
+    width: 42px;
+    height: 62px;
+    min-width: 0;
+    margin-left: -22px;
+    padding: 0;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.opponent-hand .game-card:first-child {
+    margin-left: 0;
+}
+
+.revealed-hand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.revealed-hand .game-card {
+    width: 42px;
+    height: 62px;
+    flex-shrink: 0;
+    margin: 0;
+    font-size: 1.1rem;
+    border: 2px solid var(--color-highlight);
+    position: relative;
+    z-index: 3;
+    box-shadow: 0 4px 10px rgba(41, 35, 61, 0.25);
+}
+.opponent-card-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 62px;
+    margin: 8px 0;
+}
+
+.opponent-card-area.has-revealed-cards .opponent-hand .game-card {
+    opacity: 0.65;
+}
+
 /* Seat 1: upper left */
 .opponent-position-1 {
     top: 30%;
-    left: 40px;
+    left: 24px;
 }
 
 /* Seat 2: top center */
@@ -309,19 +368,19 @@ button:disabled {
 /* Seat 3: upper right */
 .opponent-position-3 {
     top: 30%;
-    right: 40px;
+    right: 24px;
 }
 
 /* Seat 4: lower left */
 .opponent-position-4 {
     top: 62%;
-    left: 40px;
+    left: 24px;
 }
 
 /* Seat 5: lower right */
 .opponent-position-5 {
     top: 62%;
-    right: 40px;
+    right: 24px;
 }
 
 /* Central playing area */
@@ -337,7 +396,7 @@ button:disabled {
     justify-self: center;
     background-color: rgba(39, 133, 104, 0.35);
     border-radius: 20px;
-    transform: translateY(80px);
+    transform: translateY(130px);
 }
 
 .center-area h2,

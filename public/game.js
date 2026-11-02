@@ -144,16 +144,42 @@ function displayPlayers(gamestate){
         const nameSection = document.createElement("p");
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
-        const revealedCardsSection = document.createElement("p");
+        const cardArea = document.createElement("div");
+        const opponentHand = document.createElement("div");
+        const revealedHand = document.createElement("div");
+
+        cardArea.classList.add("opponent-card-area");
+        opponentHand.classList.add("opponent-hand");
+        revealedHand.classList.add("revealed-hand");
         const lowButton = document.createElement("button");
         lowButton.disabled = !canReveal || (availableCardCount === 0);
         const highButton = document.createElement("button");
         highButton.disabled = !canReveal || (availableCardCount === 0);
         nameSection.textContent = player.name;
-        cardCountSection.textContent = "Cards: " + player.cardCount;
+        cardCountSection.textContent = "Cards: " + availableCardCount;
         trioSection.textContent = "Trios: " + player.trios.join(", ");
-        const revealedValues = player.revealedCards.map((card) => card.value);
-        revealedCardsSection.textContent = "Revealed Cards: " + revealedValues.join(", ");
+
+        // Display remaining hidden cards
+        for (let i = 0; i < availableCardCount; i++) {
+            const card = document.createElement("div");
+
+            card.classList.add("game-card", "face-down-card");
+            card.textContent = "?";
+
+            opponentHand.appendChild(card);
+        }
+        if (player.revealedCards.length > 0) {
+            cardArea.classList.add("has-revealed-cards");
+        }
+        // Display revealed cards separately
+        player.revealedCards.forEach((revealedCard) => {
+            const card = document.createElement("div");
+
+            card.classList.add("game-card", "revealed-card");
+            card.textContent = revealedCard.value;
+
+            revealedHand.appendChild(card);
+        });
         lowButton.textContent = "Reveal Lowest";
         highButton.textContent = "Reveal Highest";
         lowButton.addEventListener("click", async function(){
@@ -164,8 +190,10 @@ function displayPlayers(gamestate){
         });
         playerSection.appendChild(nameSection);
         playerSection.appendChild(cardCountSection);
+        cardArea.appendChild(opponentHand);
+        cardArea.appendChild(revealedHand);
+        playerSection.appendChild(cardArea);
         playerSection.appendChild(trioSection);
-        playerSection.appendChild(revealedCardsSection);
         playerSection.appendChild(lowButton);
         playerSection.appendChild(highButton);
         playersArea.appendChild(playerSection);
