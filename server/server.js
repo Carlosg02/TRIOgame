@@ -368,6 +368,9 @@ function getPlayerGameState(playerId){
         currentPlayerID: game.currentPlayerID,
         winnerID: game.winnerID,
         hand: currPlayer.hand,
+        revealedHandCardIds: game.turn.revealedCards
+            .filter(card => card.source === "player" && card.playerId === playerId)
+            .map(card => card.cardId),
         trios: currPlayer.trios,
         players: publicPlayers,
         center: publicCenter,

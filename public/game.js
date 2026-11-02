@@ -73,6 +73,21 @@ async function revealPlayerCard(targetPlayerId, position){
     }
 }
 
+const animalImages = {
+    1: "01-jaguar.png",
+    2: "02-capybara.png",
+    3: "03-macaw.png",
+    4: "04-monkey.png",
+    5: "05-snake.png",
+    6: "06-armadillo.png",
+    7: "07-frog.png",
+    8: "08-tiger.png",
+    9: "09-axolotl.png",
+    10: "10-sloth.png",
+    11: "11-butterfly.png",
+    12: "12-toucan.png"
+};
+
 function displayHand(gamestate){
     const playerHandArea = document.getElementById("player-hand");
     const playerId = sessionStorage.getItem("playerId");
@@ -80,8 +95,18 @@ function displayHand(gamestate){
     playerHandArea.textContent = "";
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
-        cardButton.textContent = card.value;
         cardButton.classList.add("game-card");
+
+        const cardNumber = document.createElement("span");
+        cardNumber.textContent = card.value;
+
+        const animalImage = document.createElement("img");
+        animalImage.src = `/assets/animals/${animalImages[card.value]}`;
+        animalImage.classList.add("card-animal");
+
+        cardButton.appendChild(cardNumber);
+        cardButton.appendChild(animalImage);
+
         playerHandArea.appendChild(cardButton);
     });
 
@@ -174,9 +199,18 @@ function displayPlayers(gamestate){
         // Display revealed cards separately
         player.revealedCards.forEach((revealedCard) => {
             const card = document.createElement("div");
-
             card.classList.add("game-card", "revealed-card");
-            card.textContent = revealedCard.value;
+
+            const cardNumber = document.createElement("span");
+            cardNumber.textContent = revealedCard.value;
+
+            const animalImage = document.createElement("img");
+            animalImage.src = `/assets/animals/${animalImages[revealedCard.value]}`;
+            animalImage.alt = `Animal for card ${revealedCard.value}`;
+            animalImage.classList.add("card-animal");
+
+            card.appendChild(cardNumber);
+            card.appendChild(animalImage);
 
             revealedHand.appendChild(card);
         });
@@ -213,10 +247,21 @@ function displayCenter(gamestate){
         cardButton.addEventListener("click", async function(){
             await revealCenterCard(card.id);
         });
-        if (card.revealed){
-            cardButton.textContent = card.value;
+        if (card.revealed) {
             cardButton.classList.add("revealed-card");
-        }else{
+
+            const cardNumber = document.createElement("span");
+            cardNumber.textContent = card.value;
+
+            const animalImage = document.createElement("img");
+            animalImage.src = `/assets/animals/${animalImages[card.value]}`;
+            animalImage.alt = `Animal for card ${card.value}`;
+            animalImage.classList.add("card-animal");
+
+            cardButton.appendChild(cardNumber);
+            cardButton.appendChild(animalImage);
+
+        } else {
             cardButton.textContent = "?";
             cardButton.classList.add("face-down-card");
         }
