@@ -1,29 +1,37 @@
 :root {
-    --color-background: #FFF8ED;
-    --color-surface: #FFFFFF;
-    --color-text: #29233D;
-    --color-muted: #756E82;
+    /* Rainforest color palette */
+    --color-background: #102A25;
+    --color-surface: #234A3C;
+    --color-text: #F5E6C8;
+    --color-muted: #C5C6B4;
 
-    --color-primary: #FF6B6B;
-    --color-secondary: #39C6B4;
-    --color-highlight: #FFD166;
-    --color-purple: #A78BFA;
+    /* Accent colors */
+    --color-primary: #2E9B65;
+    --color-secondary: #3C7258;
+    --color-highlight: #D5AD62;
+    --color-purple: #A68B5B;
 
+    /* Shared styling */
     --radius-card: 18px;
     --radius-button: 12px;
 
-    --shadow-card: 0 4px 12px rgba(41, 35, 61, 0.10);
+    --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 /* Global page styling */
 body {
-    background-color: #A9DCD5;
-    background-image: radial-gradient(
-        ellipse at center,
-        #C8EAE4 0%,
-        #A9DCD5 75%,
-        #8BC9BF 100%
-    );
+    background-color: #102A25;
+
+    background-image:
+        radial-gradient(
+            ellipse at center,
+            #234A3C 0%,
+            #17382F 55%,
+            #0B201C 100%
+        );
+
+    background-attachment: fixed;
+
     color: var(--color-text);
     font-family: "Trebuchet MS", Arial, sans-serif;
     margin: 0;
@@ -96,16 +104,44 @@ button:disabled {
     text-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
 }
 
-/* Turn message */
+/* Turn status panel */
 #turn-message {
-    background-color: var(--color-highlight);
-    border-radius: var(--radius-card);
-    padding: 16px;
-    margin-bottom: 24px;
+    position: relative;
+    max-width: 520px;
+    margin: 16px auto 24px;
+    padding: 16px 24px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(30, 75, 56, 0.97),
+        rgba(13, 43, 34, 0.98)
+    );
+
+    color: #F5E6C8;
     text-align: center;
+    font-size: 1.1rem;
     font-weight: bold;
-    box-shadow: var(--shadow-card);
-    min-height: 24px;
+    letter-spacing: 0.5px;
+
+    border: 2px solid rgba(213, 173, 98, 0.7);
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.25),
+        inset 0 0 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Decorative gold accent */
+#turn-message::before {
+    content: "✦";
+    color: #D5AD62;
+    margin-right: 10px;
+}
+
+#turn-message::after {
+    content: "✦";
+    color: #D5AD62;
+    margin-left: 10px;
 }
 
 /* Game sections */
@@ -224,6 +260,7 @@ button:disabled {
    TABLETOP LAYOUT
    ================================= */
 
+/* Rainforest game table */
 .game-table {
     position: relative;
     display: grid;
@@ -231,12 +268,30 @@ button:disabled {
     grid-template-areas: "center";
     align-items: center;
     justify-items: center;
-    min-height: 820px;
+
+    min-height: 1000px;
     padding: 24px;
     margin-bottom: 24px;
-    background-color: rgba(39, 133, 104, 0.18);
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    border-radius: 28px;
+
+    /* Deep emerald playing surface */
+    background:
+        radial-gradient(
+            ellipse at 50% 45%,
+            #285B46 0%,
+            #1B4536 55%,
+            #102D25 100%
+        );
+
+    /* Antique gold border */
+    border: 3px solid #B99A5B;
+    border-radius: 32px;
+
+    /* Depth and soft inner lighting */
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.35),
+        inset 0 0 35px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 5px rgba(245, 230, 200, 0.08);
+
     overflow: visible;
 }
 
@@ -257,16 +312,62 @@ button:disabled {
 .opponent-card {
     position: absolute;
     width: 220px;
-    max-width: calc(100% - 16px);
-    min-width: 0;
-    padding: 10px;
-    margin: 0;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
-    background-color: rgba(255, 248, 237, 0.96);
-    box-shadow: 0 3px 8px rgba(41, 35, 61, 0.08);
-    font-size: 0.9rem;
+    padding: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(30, 75, 56, 0.97),
+            rgba(13, 43, 34, 0.98)
+        );
+
+    color: #F5E6C8;
+
+    border: 2px solid rgba(213, 173, 98, 0.75);
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.3),
+        inset 0 0 15px rgba(0, 0, 0, 0.2);
+
     pointer-events: auto;
+    overflow: hidden;
+}
+
+/* Botanical decorations inside opponent panels */
+.opponent-card::before,
+.opponent-card::after {
+    content: "";
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    background-image: url("/assets/jungle-foliage.png");
+    background-size: 240px auto;
+    background-repeat: no-repeat;
+    background-position: left top;
+
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.opponent-card::before {
+    top: -25px;
+    left: -30px;
+}
+
+.opponent-card::after {
+    bottom: -25px;
+    right: -30px;
+    transform: rotate(180deg);
+}
+
+/* Keep player information above the foliage */
+.opponent-card > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Opponent names */
@@ -383,19 +484,34 @@ button:disabled {
     right: 24px;
 }
 
-/* Central playing area */
+/* Rainforest center-card area */
 .center-area {
     grid-area: center;
     position: relative;
     z-index: 1;
+
     width: 44%;
     min-width: 0;
     margin: 0;
-    padding: 20px;
+    padding: 24px 20px;
+
     align-self: center;
     justify-self: center;
-    background-color: rgba(39, 133, 104, 0.35);
-    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13, 43, 34, 0.85),
+            rgba(30, 78, 56, 0.75)
+        );
+
+    border: 2px solid rgba(213, 173, 98, 0.65);
+    border-radius: 22px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        inset 0 0 18px rgba(0, 0, 0, 0.15);
+
     transform: translateY(130px);
 }
 
@@ -404,6 +520,17 @@ button:disabled {
     text-align: center;
     font-size: 1.1rem;
     margin-bottom: 16px;
+}
+
+/* Center cards heading */
+.center-area h2 {
+    color: #F5E6C8;
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(213, 173, 98, 0.35);
 }
 
 /* Center cards */
@@ -429,12 +556,74 @@ button:disabled {
     cursor: default;
 }
 
-/* Player's hand */
+/* Player's hand panel */
 .hand-area {
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.65);
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    padding: 24px;
+    margin-top: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(30, 75, 56, 0.97),
+            rgba(13, 43, 34, 0.98)
+        );
+
+    border: 2px solid rgba(213, 173, 98, 0.75);
     border-radius: 24px;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.3),
+        inset 0 0 20px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
+}
+
+/* Botanical decorations */
+.hand-area::before,
+.hand-area::after {
+    content: "";
+    position: absolute;
+
+    width: 160px;
+    height: 160px;
+
+    background-image: url("/assets/jungle-foliage.png");
+    background-size: 320px auto;
+    background-repeat: no-repeat;
+    background-position: left top;
+
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hand-area h2 {
+    color: #F5E6C8;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(213, 173, 98, 0.35);
+}
+
+.hand-area::before {
+    top: -35px;
+    left: -40px;
+}
+
+.hand-area::after {
+    bottom: -35px;
+    right: -40px;
+    transform: rotate(180deg);
+}
+
+/* Keep hand content above the foliage */
+.hand-area > * {
+    position: relative;
+    z-index: 1;
 }
 
 .hand-area #player-hand {
@@ -540,6 +729,7 @@ button:disabled {
     font-size: 1rem;
 }
 
+
 #center-cards .revealed-card {
     display: flex;
     flex-direction: column;
@@ -551,6 +741,35 @@ button:disabled {
     width: 70px;
     height: 70px;
     object-fit: contain;
+}
+
+/* Dark ink for light-colored card faces */
+.game-card:not(.face-down-card) {
+    color: #24382F;
+
+    border: 2px solid #C6A15B;
+
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.22),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.65);
+}
+
+/* Interactive card hover effect */
+.game-card:not(.face-down-card):not(:disabled):hover {
+    border-color: #E5C77A;
+
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.3),
+        0 0 12px rgba(213, 173, 98, 0.25);
+}
+
+/* Ensure revealed center cards use dark text */
+#center-cards .revealed-card {
+    color: #24382F;
+}
+
+#center-cards .revealed-card:disabled {
+    color: #24382F;
 }
 
 #player-hand .hand-card-revealed {
@@ -920,4 +1139,338 @@ button:disabled {
 /* Keep the button hidden for non-host players */
 .victory-celebration-content #new-game-button[hidden] {
     display: none;
+}
+
+/* Rainforest background layer */
+.jungle-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Soft atmospheric lighting */
+.jungle-glow {
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 35%,
+            rgba(76, 145, 91, 0.22) 0%,
+            transparent 60%
+        ),
+        radial-gradient(
+            ellipse at 10% 90%,
+            rgba(11, 45, 30, 0.65) 0%,
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 90% 10%,
+            rgba(11, 45, 30, 0.65) 0%,
+            transparent 45%
+        );
+}
+
+/* Decorative tropical foliage */
+.jungle-foliage {
+    position: absolute;
+    width: 350px;
+    height: 100%;
+
+    background-image: url("/assets/jungle-foliage.png");
+    background-size: 350px auto;
+    background-repeat: repeat-y;
+    background-position: top center;
+
+    opacity: 0.65;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+}
+
+/* Left jungle foliage */
+.jungle-foliage-left {
+    left: -30px;
+    top: 0;
+}
+
+/* Right jungle foliage */
+.jungle-foliage-right {
+    right: -30px;
+    top: 0;
+    transform: scaleX(-1);
+}
+
+/* Colorful tropical flower accent */
+.jungle-flowers {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+
+    right: -45px;
+    bottom: -35px;
+
+    background-image: url("/assets/jungle-flowers.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+/* Floating turn announcement */
+#turn-announcement-message:not(:empty) {
+    color: #F5E6C8;
+
+    background: linear-gradient(
+        135deg,
+        rgba(23, 65, 47, 0.97),
+        rgba(10, 35, 29, 0.98)
+    );
+
+    border: 2px solid #D5AD62;
+    border-radius: 18px;
+
+    padding: 18px 32px;
+
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-align: center;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(213, 173, 98, 0.2),
+        inset 0 0 18px rgba(213, 173, 98, 0.08);
+}
+
+/* Gold ornament beside turn announcements */
+#turn-announcement-message:not(:empty)::before {
+    content: "✦";
+    color: #D5AD62;
+    margin-right: 14px;
+}
+
+#turn-announcement-message:not(:empty)::after {
+    content: "✦";
+    color: #D5AD62;
+    margin-left: 14px;
+}
+
+/* Rainforest-themed Trio celebration */
+.trio-celebration {
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(35, 90, 65, 0.96) 0%,
+            rgba(10, 35, 29, 0.98) 75%
+        );
+}
+
+/* Celebration content */
+.trio-celebration-content {
+    padding: 36px 48px;
+    text-align: center;
+
+    background: linear-gradient(
+        145deg,
+        rgba(35, 80, 58, 0.9),
+        rgba(12, 42, 32, 0.95)
+    );
+
+    border: 3px solid #D5AD62;
+    border-radius: 28px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(213, 173, 98, 0.18),
+        inset 0 0 25px rgba(213, 173, 98, 0.08);
+}
+
+/* Golden TRIO heading */
+.trio-celebration-content h2 {
+    color: #D5AD62;
+    font-size: clamp(3rem, 7vw, 5rem);
+    letter-spacing: 6px;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* Player who collected the Trio */
+.trio-celebration-content p {
+    color: #F5E6C8;
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Make the Trio collection message clearly readable */
+.trio-celebration-content p {
+    color: #FFF2D6;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.4;
+
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
+}
+
+/* Allow floral decorations inside the celebration panel */
+.trio-celebration-content {
+    position: relative;
+    isolation: isolate;
+}
+
+/* Tropical flowers in the top-right corner */
+.trio-celebration-content::after {
+    content: "";
+    position: absolute;
+
+    top: -45px;
+    right: -45px;
+
+    width: 180px;
+    height: 180px;
+
+    background-image: url("/assets/jungle-flowers.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    opacity: 0.95;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* High-contrast Trio collection message */
+.trio-celebration .trio-celebration-content
+#trio-celebration-player {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 20px auto 0;
+    padding: 12px 24px;
+
+    background: rgba(5, 27, 21, 0.95);
+    color: #FFF8E8;
+
+    border: 1px solid #D5AD62;
+    border-radius: 12px;
+
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.4;
+    text-align: center;
+
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Rainforest victory background */
+.victory-celebration {
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(35, 90, 65, 0.96) 0%,
+            rgba(7, 27, 22, 0.98) 80%
+        );
+}
+
+/* Elegant victory panel */
+.victory-celebration-content {
+    position: relative;
+    overflow: hidden;
+
+    background: linear-gradient(
+        145deg,
+        #24553F,
+        #102E25
+    );
+
+    border: 3px solid #D5AD62;
+    border-radius: 28px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(213, 173, 98, 0.2),
+        inset 0 0 25px rgba(213, 173, 98, 0.08);
+}
+
+/* Golden winner heading */
+.victory-celebration-content h2 {
+    color: #D5AD62;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Winner name and supporting text */
+#victory-player-name,
+.victory-celebration-content p {
+    color: #FFF2D6;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Tropical flowers on the victory panel */
+.victory-celebration-content::after {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 180px;
+    height: 180px;
+
+    background-image: url("/assets/jungle-flowers.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    opacity: 0.95;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Keep victory information above the flowers */
+.victory-celebration-content > *:not(#victory-confetti) {
+    position: relative;
+    z-index: 1;
+}
+
+/* Victory screen New Game button */
+#new-game-button {
+    background: linear-gradient(
+        135deg,
+        #D5AD62,
+        #B88A43
+    );
+
+    color: #102A25;
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    border: 2px solid #F5E6C8;
+    border-radius: 14px;
+
+    padding: 14px 32px;
+    margin-top: 24px;
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+#new-game-button:hover {
+    background: linear-gradient(
+        135deg,
+        #E8C77C,
+        #D5AD62
+    );
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 15px rgba(213, 173, 98, 0.3);
 }
