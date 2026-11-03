@@ -191,9 +191,9 @@ button:disabled {
 
 /* Face-down center cards */
 #center-cards .face-down-card {
-    background-color: var(--color-secondary);
-    color: white;
-    border-color: var(--color-secondary);
+    background-color: #F5E6C8;
+    color: transparent;
+    border-color: #F5E6C8;
     cursor: default;
 }
 
@@ -551,4 +551,58 @@ button:disabled {
     width: 70px;
     height: 70px;
     object-fit: contain;
+}
+
+#player-hand .hand-card-revealed {
+    border: 3px solid #2E9B65;
+    box-shadow: 0 0 12px rgba(46, 155, 101, 0.45);
+}
+
+.face-down-card {
+    background-color: #FFFFFF;
+    background-image: url("/assets/card-back.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: transparent;
+}
+
+/* Animate Newly Revealed Cards */
+#center-cards .newly-revealed {
+    animation: cardFlip 0.5s ease-in-out;
+}
+
+/* Animate newly revealed opponent cards */
+.revealed-hand .newly-revealed {
+    animation: cardFlip 0.5s ease-in-out;
+}
+
+@keyframes cardFlip {
+    0% {
+        transform: rotateY(90deg);
+    }
+
+    100% {
+        transform: rotateY(0deg);
+    }
+}
+
+/* Animate newly revealed card from your own hand */
+#player-hand .newly-revealed-hand {
+    animation: handReveal 0.5s ease-in-out;
+}
+
+@keyFrames handReveal {
+    0% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-12px);
+        box-shadow: 0 0 20px rgba(46, 155, 101, 0.8);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }

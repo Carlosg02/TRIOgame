@@ -1,3 +1,8 @@
+// These sets are used to track the revealed cards to apply the newly-revealed class for the animations to work since the polling is done every second and the DOM is re-rendered each time.
+let previouslyRevealedCenterCards = new Set();
+let previouslyRevealedOpponentCards = new Set();
+let previouslyRevealedHandCards = new Set();
+
 /**
  * Aquires the current game state from the server to provide the client with updated information about the game
  * @returns Disctionary containing important game state variable and informatio.
@@ -97,6 +102,14 @@ function displayHand(gamestate){
         const cardButton = document.createElement("button");
         cardButton.classList.add("game-card");
 
+        if (gamestate.revealedHandCardIds?.includes(card.id)) {
+            cardButton.classList.add("hand-card-revealed");
+
+            if (!previouslyRevealedHandCards.has(card.id)) {
+                cardButton.classList.add("newly-revealed-hand");
+            }
+        }
+
         const cardNumber = document.createElement("span");
         cardNumber.textContent = card.value;
 
@@ -126,6 +139,9 @@ function displayHand(gamestate){
     playerHandArea.appendChild(lowButton);
     playerHandArea.appendChild(highButton);
 
+    previouslyRevealedHandCards = new Set(
+        gamestate.revealedHandCardIds ?? []
+    )
 
 }
 
@@ -201,6 +217,10 @@ function displayPlayers(gamestate){
             const card = document.createElement("div");
             card.classList.add("game-card", "revealed-card");
 
+            if (!previouslyRevealedOpponentCards.has(revealedCard.id)) {
+                card.classList.add("newly-revealed");
+            }
+
             const cardNumber = document.createElement("span");
             cardNumber.textContent = revealedCard.value;
 
@@ -233,6 +253,13 @@ function displayPlayers(gamestate){
         playersArea.appendChild(playerSection);
 
     });
+    previouslyRevealedOpponentCards = new Set(
+        gamestate.players
+            .filter(player => player.id !== playerId)
+            .flatMap(player =>
+                player.revealedCards.map(card => card.id)
+            )
+    );
 }
 
 function displayCenter(gamestate){
@@ -240,6 +267,11 @@ function displayCenter(gamestate){
     const playerId = sessionStorage.getItem("playerId");
     const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
     centerSection.textContent = "";
+    const currentlyRevealedCenterCards = new Set(
+        gamestate.center
+            .filter(card => card.revealed)
+            .map(card => card.id)
+    );
     gamestate.center.forEach((card) => {
         const cardButton = document.createElement("button");
         cardButton.classList.add("game-card");
@@ -248,6 +280,9 @@ function displayCenter(gamestate){
             await revealCenterCard(card.id);
         });
         if (card.revealed) {
+            if (!previouslyRevealedCenterCards.has(card.id)) {
+                cardButton.classList.add("newly-revealed");
+            }
             cardButton.classList.add("revealed-card");
 
             const cardNumber = document.createElement("span");
@@ -267,6 +302,7 @@ function displayCenter(gamestate){
         }
         centerSection.appendChild(cardButton);
     })
+    previouslyRevealedCenterCards = currentlyRevealedCenterCards;
 }
 
 const newGameButton = document.querySelector("#new-game-button");
