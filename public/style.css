@@ -269,7 +269,9 @@ button:disabled {
     align-items: center;
     justify-items: center;
 
-    min-height: 1000px;
+    min-height: 0;
+    height: clamp(650px, 65vh, 850px);
+    box-sizing: border-box;
     padding: 24px;
     margin-bottom: 24px;
 
@@ -1473,4 +1475,99 @@ button:disabled {
     box-shadow:
         0 8px 22px rgba(0, 0, 0, 0.35),
         0 0 15px rgba(213, 173, 98, 0.3);
+}
+
+/* Desktop game layout */
+@media (min-width: 1100px) {
+    .player-screen {
+        width: 96%;
+        max-width: 1800px;
+        margin: 0 auto;
+    }
+
+    .game-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    /* Responsive tabletop height on desktop */
+    .game-table {   
+        height: clamp(480px, 70vh, 700px);
+        min-height: 0;
+    }
+
+    .hand-area {
+        min-width: 0;
+        margin-top: 0;
+    }
+
+    /* Center-card area on desktop */
+    .center-area {
+        width: 36%;
+        min-width: 280px;
+        max-width: 420px;
+        box-sizing: border-box;
+        transform: translateY(0);
+    }
+
+    /* Left opponent */
+    .opponent-position-1 {
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+    }
+
+    /* Right opponent */
+    .opponent-position-2 {
+        top: 50%;
+        left: auto;
+        right: 12px;
+        transform: translateY(-50%);
+    }
+
+    /* Four-player game: three opponent panels */
+
+    /* Opponent 1: middle-left */
+    .game-table.player-count-4 .opponent-position-1 {
+        top: 50%;
+        bottom: auto;
+        left: 12px;
+        right: auto;
+        transform: translateY(-50%);
+    }
+
+    /* Four-player game: wider top opponent */
+    .game-table.player-count-4 .opponent-position-2 {
+        top: 12px;
+        bottom: auto;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+
+        width: 340px;
+        padding: 8px 16px;
+        box-sizing: border-box;
+    }
+
+    /* Opponent 3: middle-right */
+    .game-table.player-count-4 .opponent-position-3 {
+        top: 50%;
+        bottom: auto;
+        left: auto;
+        right: 12px;
+        transform: translateY(-50%);
+    }
+
+    /* Four-player game: compact center-card area */
+    .game-table.player-count-4 .center-area {
+        width: 42%;
+        min-width: 300px;
+        max-width: 480px;
+        padding: 10px 16px;
+        transform: translateY(120px);
+    }
+
+    
 }

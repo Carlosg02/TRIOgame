@@ -539,6 +539,23 @@ async function updateGame(){
     if (gameState === undefined){
         return;
     }
+
+    // Apply the correct tabletop layout based on player count
+    const gameTable = document.querySelector(".game-table");
+
+    if (gameTable && gameState.players) {
+        const totalPlayers = gameState.players.length;
+
+        gameTable.classList.remove(
+            "player-count-3",
+            "player-count-4",
+            "player-count-5",
+            "player-count-6"
+        );
+
+        gameTable.classList.add(`player-count-${totalPlayers}`);
+    }
+
     displayCenter(gameState);
     displayTurn(gameState);
     displayHand(gameState);
