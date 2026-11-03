@@ -592,7 +592,7 @@ button:disabled {
     animation: handReveal 0.5s ease-in-out;
 }
 
-@keyFrames handReveal {
+@keyframes handReveal {
     0% {
         transform: translateY(0);
     }
@@ -605,4 +605,319 @@ button:disabled {
     100% {
         transform: translateY(0);
     }
+}
+
+/* Trio celebration overlay */
+.trio-celebration {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(20, 30, 45, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Keep the celebration hidden until triggered */
+.trio-celebration.hidden {
+    display: none;
+}
+
+/* Celebration content */
+.trio-celebration-content {
+    background-color: #FFFFFF;
+    border: 4px solid #F5E6C8;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    width: min(350px, 85vw);
+}
+
+/* TRIO heading */
+.trio-celebration-content h2 {
+    font-size: 3rem;
+    color: #29353F;
+    margin-bottom: 20px;
+}
+
+/* Animal illustration */
+#trio-celebration-animal {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+/* Player message */
+#trio-celebration-player {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #29353F;
+}
+
+/* Trio celebration entrance animation */
+.trio-celebration:not(.hidden) .trio-celebration-content {
+    animation: trioPop 0.6s ease-out;
+}
+
+@keyframes trioPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    80% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Highlight the opponent whose turn it is */
+.opponent-card.active-player {
+    border: 3px solid #2E9B65;
+    box-shadow: 0 0 18px rgba(46, 155, 101, 0.35);
+}
+
+/* Highlight the entire player hand container */
+.hand-area.active-player {
+    border: 3px solid #2E9B65;
+    border-radius: 16px;
+    box-shadow: 0 0 18px rgba(46, 155, 101, 0.35);
+}
+
+/* Turn announcement banner */
+#turn-announcement-message.turn-announcement {
+    position: fixed;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background-color: #25354A;
+    color: #F5E6C8;
+    border: 3px solid #F5E6C8;
+    border-radius: 16px;
+
+    padding: 18px 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 900;
+    pointer-events: none;
+
+    animation: turnAnnouncementPop 0.5s ease-out;
+}
+
+@keyframes turnAnnouncementPop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -20px) scale(0.8);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+/* Subtle pulse for the active player's container */
+.opponent-card.active-player,
+.hand-area.active-player {
+    animation: activePlayerPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes activePlayerPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(46, 155, 101, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 0 22px rgba(46, 155, 101, 0.65);
+    }
+}
+
+/* Victory celebration overlay */
+.victory-celebration {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 25, 40, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 20px;
+}
+
+/* Hide victory screen until the game finishes */
+.victory-celebration.hidden {
+    display: none;
+}
+
+/* Victory celebration card */
+.victory-celebration-content {
+    background-color: #25354A;
+    border: 4px solid #F5E6C8;
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+    width: min(500px, 90vw);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* WINNER heading */
+.victory-celebration-content h2 {
+    font-size: 3.5rem;
+    color: #F5D47A;
+    margin-bottom: 15px;
+}
+
+/* Winning player's name */
+#victory-player-name {
+    font-size: 2rem;
+    color: #FFFFFF;
+    margin-bottom: 25px;
+}
+
+/* Collected Trios label */
+.victory-celebration-content p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #F5E6C8;
+    margin-bottom: 20px;
+}
+
+/* Container for collected Trio illustrations */
+#victory-trios {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Individual collected Trio cards */
+.victory-trio-card {
+    width: 100px;
+    height: 140px;
+    background-color: #FFFFFF;
+    border: 3px solid #F5E6C8;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+/* Animal illustrations */
+.victory-trio-card img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
+
+/* Card numbers */
+.victory-trio-card span {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #29353F;
+}
+
+/* Victory screen entrance animation */
+.victory-celebration:not(.hidden) .victory-celebration-content {
+    animation: victoryEntrance 0.7s ease-out both;
+}
+
+@keyframes victoryEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.8);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Confetti container */
+#victory-confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Individual confetti pieces */
+.confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 16px;
+    opacity: 0;
+    animation: confettiFall linear forwards;
+}
+
+/* Falling confetti animation */
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* New Game button on victory screen */
+.victory-celebration-content #new-game-button {
+    margin-top: 30px;
+    padding: 14px 32px;
+    background-color: #2E9B65;
+    color: #FFFFFF;
+    border: 2px solid #F5E6C8;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.victory-celebration-content #new-game-button:hover {
+    background-color: #247A50;
+    transform: scale(1.05);
+}
+
+/* Keep the button hidden for non-host players */
+.victory-celebration-content #new-game-button[hidden] {
+    display: none;
 }

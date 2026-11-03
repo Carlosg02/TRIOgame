@@ -2,6 +2,8 @@
 let previouslyRevealedCenterCards = new Set();
 let previouslyRevealedOpponentCards = new Set();
 let previouslyRevealedHandCards = new Set();
+let previousPlayerTrios = new Map();
+let previousTurnPlayerID = null;
 
 /**
  * Aquires the current game state from the server to provide the client with updated information about the game
@@ -97,6 +99,12 @@ function displayHand(gamestate){
     const playerHandArea = document.getElementById("player-hand");
     const playerId = sessionStorage.getItem("playerId");
     const canReveal = (playerId === gamestate.currentPlayerID) && (!gamestate.turnLocked) && (gamestate.status === "playing");
+    const handContainer = document.querySelector(".hand-area");
+
+    handContainer.classList.toggle(
+        "active-player",
+        playerId === gamestate.currentPlayerID && gamestate.status === "playing"
+    );
     playerHandArea.textContent = "";
     gamestate.hand.forEach((card) => {
         const cardButton = document.createElement("button");
@@ -182,6 +190,10 @@ function displayPlayers(gamestate){
         const playerSection = document.createElement("div");
         playerSection.classList.add("opponent-card");
         playerSection.classList.add(`opponent-position-${index + 1}`);
+        // Highlight the opponent whose turn it is
+        if (player.id === gamestate.currentPlayerID) {
+            playerSection.classList.add("active-player");
+        }
         const nameSection = document.createElement("p");
         const cardCountSection = document.createElement("p");
         const trioSection = document.createElement("p");
@@ -323,6 +335,194 @@ newGameButton.addEventListener("click", async function(){
     }
 })
 
+function detectCollectedTrio(gamestate){
+    gamestate.players.forEach((player) => {
+        const previousTrios = previousPlayerTrios.get(player.id);
+
+        if ( previousTrios !== undefined && player.trios.length > previousTrios.length) {
+            const newTrioValue = player.trios[player.trios.length - 1];
+
+            console.log("TRIO COLLECTED!", {
+                playerName: player.name,
+                trioValue: newTrioValue
+            });
+
+            showTrioCelebration(player.name, newTrioValue);
+        }
+        previousPlayerTrios.set(player.id, [...player.trios]);
+    });
+}
+
+function detectTurnChange(gamestate) {
+    const currentPlayerID = gamestate.currentPlayerID;
+
+    if(gamestate.status != "playing") {
+        previousTurnPlayerID = null;
+        return;
+    }
+
+    //Initialize tracking without announcing an existing turn
+    if(previousTurnPlayerID === null) {
+        previousTurnPlayerID = currentPlayerID;
+        return;
+    }
+
+    //detect when the active player changes
+    if (previousTurnPlayerID !== currentPlayerID) {
+        const currentPlayer = gamestate.players.find(
+            player => player.id === currentPlayerID
+        );
+
+        const myPlayerID = sessionStorage.getItem("playerId");
+
+        if (currentPlayerID === myPlayerID) {
+            showTurnAnnouncement("It's YOUR turn!");
+        }else if( currentPlayer) {
+            showTurnAnnouncement(`${currentPlayer.name}'s Turn!`);
+        }
+    }
+    previousTurnPlayerID = currentPlayerID;
+}
+
+let turnAnnouncementTimeout;
+
+function showTurnAnnouncement(message) {
+    const turnMessage = document.getElementById("turn-announcement-message");
+
+    //display the announcement
+    turnMessage.textContent = message;
+    turnMessage.classList.add('turn-announcement');
+
+    //clear any previous timeout
+    clearTimeout(turnAnnouncementTimeout);
+
+    //hide the announcement after 2 seconds
+    turnAnnouncementTimeout = setTimeout(() => {
+        turnMessage.classList.remove('turn-announcement');
+        turnMessage.textContent = '';
+    }, 2000);
+}
+
+let trioCelebrationTimeout;
+
+function showTrioCelebration(playerName, trioValue) {
+    const celebration = document.getElementById("trio-celebration");
+    const animalImage = document.getElementById("trio-celebration-animal");
+    const playerMessage = document.getElementById("trio-celebration-player");
+
+    // Display the matching animal
+    animalImage.src = `/assets/animals/${animalImages[trioValue]}`;
+    animalImage.alt = `Animal for Trio ${trioValue}`;
+
+    // Display the player who collected the Trio
+    playerMessage.textContent = `${playerName} collected Trio ${trioValue}!`;
+
+    // Show the overlay
+    celebration.classList.remove("hidden");
+
+    // Clear any previous celebration timeout
+    clearTimeout(trioCelebrationTimeout);
+
+    // Hide the celebration after 2 seconds
+    trioCelebrationTimeout = setTimeout(() => {
+        celebration.classList.add("hidden");
+    }, 2000);
+}
+
+function createVictoryConfetti() {
+    const confettiContainer = document.getElementById("victory-confetti");
+
+    confettiContainer.textContent = "";
+
+    const colors = [
+        "#F5D47A", // Gold
+        "#F5E6C8", // Cream
+        "#2E9B65", // Green
+        "#FFFFFF", // White
+        "#E88C63"  // Coral
+    ];
+
+    for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti-piece");
+
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+
+        confetti.style.animationDuration =
+            `${3 + Math.random() * 3}s`;
+
+        confetti.style.animationDelay =
+            `${Math.random() * 2}s`;
+
+        confettiContainer.appendChild(confetti);
+    }
+}
+
+let victoryTimeout = null;
+let victoryScheduled = false;
+
+function displayVictory(gamestate){
+    console.log("displayVictory called");
+    console.log("Game status:", gamestate.status);
+    const victoryScreen = document.getElementById("victory-celebration");
+    const winnerName = document.getElementById("victory-player-name");
+    const victoryTrios = document.getElementById("victory-trios");
+
+    if (gamestate.status !== "finished") {
+        clearTimeout(victoryTimeout);
+        victoryTimeout = null;
+        victoryScheduled = false;
+
+        victoryScreen.classList.add("hidden");
+        return;
+    }
+
+    //find the winner
+    const winner = gamestate.players.find(player => {
+        return player.id === gamestate.winnerID;
+    });
+
+    if(!winner) {
+        return;
+    }
+
+    // Display the winner's name
+    winnerName.textContent = `${winner.name} Wins!`;
+
+    // Clear previously displayed Trio cards
+    victoryTrios.textContent = "";
+
+    // Display each collected Trio
+    winner.trios.forEach(trioValue => {
+        const trioCard = document.createElement("div");
+        trioCard.classList.add("victory-trio-card");
+
+        const cardNumber = document.createElement("span");
+        cardNumber.textContent = trioValue;
+
+        const animalImage = document.createElement("img");
+        animalImage.src = `/assets/animals/${animalImages[trioValue]}`;
+        animalImage.alt = `Animal for Trio ${trioValue}`;
+
+        trioCard.appendChild(cardNumber);
+        trioCard.appendChild(animalImage);
+
+        victoryTrios.appendChild(trioCard);
+    });
+
+    // Show victory after the final Trio celebration
+    if (!victoryScheduled) {
+        victoryScheduled = true;
+
+        victoryTimeout = setTimeout(() => {
+            createVictoryConfetti();
+            victoryScreen.classList.remove("hidden");
+        }, 2000);
+    }
+}
+
 function displayNewGameButton(gamestate){
     
     if ( gamestate.status === "finished" && gamestate.hostPlayerID === sessionStorage.getItem("playerId")){
@@ -343,6 +543,9 @@ async function updateGame(){
     displayTurn(gameState);
     displayHand(gameState);
     displayPlayers(gameState);
+    detectCollectedTrio(gameState);
+    detectTurnChange(gameState);
+    displayVictory(gameState);
     displayNewGameButton(gameState);
 }
 

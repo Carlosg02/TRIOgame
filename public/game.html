@@ -9,6 +9,7 @@
 <body>
     <main class="player-screen">
         <h1>TRIO</h1>
+        <section id="turn-announcement-message"></section>
         <section id="turn-message"></section>
         
         <div class="game-table">
@@ -24,7 +25,30 @@
             <h2>Your Hand</h2>
             <section id="player-hand"></section>
         </section>
-        <button id="new-game-button" hidden>New Game</button>
+        
     </main>
+    <!-- Trio collection celebration -->
+    <div id="trio-celebration" class="trio-celebration hidden">
+        <div class="trio-celebration-content">
+            <h2>TRIO!</h2>
+            <img id="trio-celebration-animal" src="" alt="Collected Trio animal">
+            <p id="trio-celebration-player"></p>
+        </div>
+    </div>
+    <!-- Victory celebration overlay -->
+    <div id="victory-celebration" class="victory-celebration hidden">
+
+        <div id="victory-confetti"></div>
+
+        <div class="victory-celebration-content">
+            <h2>WINNER!</h2>
+            <h3 id="victory-player-name"></h3>
+
+            <p>Collected Trios</p>
+            <div id="victory-trios"></div>
+
+            <button id="new-game-button" hidden>New Game</button>
+        </div>
+    </div>
     <script src="game.js"></script>
 </body>
