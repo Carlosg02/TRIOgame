@@ -1515,7 +1515,7 @@ button:disabled {
     /* Left opponent */
     .opponent-position-1 {
         top: 50%;
-        left: 12px;
+        left: 75px;
         transform: translateY(-50%);
     }
 
@@ -1523,7 +1523,7 @@ button:disabled {
     .opponent-position-2 {
         top: 50%;
         left: auto;
-        right: 12px;
+        right: 75px;
         transform: translateY(-50%);
     }
 
@@ -1533,7 +1533,7 @@ button:disabled {
     .game-table.player-count-4 .opponent-position-1 {
         top: 50%;
         bottom: auto;
-        left: 12px;
+        left: 75px;
         right: auto;
         transform: translateY(-50%);
     }
@@ -1556,12 +1556,106 @@ button:disabled {
         top: 50%;
         bottom: auto;
         left: auto;
-        right: 12px;
+        right: 75px;
         transform: translateY(-50%);
     }
 
     /* Four-player game: compact center-card area */
     .game-table.player-count-4 .center-area {
+        width: 42%;
+        min-width: 300px;
+        max-width: 480px;
+        padding: 10px 16px;
+        transform: translateY(120px);
+    }
+
+   /* Five-player game: four-corner seating */
+
+    .game-table.player-count-5 .opponent-position-1 {
+        top: 12px;
+        bottom: auto;
+        left: 75px;
+        right: auto;
+        transform: none;
+    }
+
+    .game-table.player-count-5 .opponent-position-2 {
+        top: 12px;
+        bottom: auto;
+        left: auto;
+        right: 75px;
+        transform: none;
+    }
+
+    .game-table.player-count-5 .opponent-position-3 {
+        top: auto;
+        bottom: 12px;
+        left: 75px;
+        right: auto;
+        transform: none;
+    }
+
+    .game-table.player-count-5 .opponent-position-4 {
+        top: auto;
+        bottom: 12px;
+        left: auto;
+        right: 75px;
+        transform: none;
+    }
+
+    /* Keep center cards vertically centered */
+    .game-table.player-count-5 .center-area {
+        transform: translateY(0);
+    }
+
+    /* Six-player game: five opponent positions */
+
+    .game-table.player-count-6 .opponent-position-1 {
+        top: 12px;
+        bottom: auto;
+        left: 75px;
+        right: auto;
+        transform: none;
+    }
+
+    .game-table.player-count-6 .opponent-position-2 {
+         top: 12px;
+        bottom: auto;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+
+        width: 340px;
+        padding: 8px 16px;
+        box-sizing: border-box;
+    }
+
+    .game-table.player-count-6 .opponent-position-3 {
+        top: 12px;
+        bottom: auto;
+        left: auto;
+        right: 75px;
+        transform: none;
+    }
+
+    .game-table.player-count-6 .opponent-position-4 {
+        top: auto;
+        bottom: 12px;
+        left: 75px;
+        right: auto;
+        transform: none;
+    }
+
+    .game-table.player-count-6 .opponent-position-5 {
+        top: auto;
+        bottom: 12px;
+        left: auto;
+        right: 75px;
+        transform: none;
+    }
+
+    /* Center cards remain in the middle */
+    .game-table.player-count-6 .center-area {
         width: 42%;
         min-width: 300px;
         max-width: 480px;
