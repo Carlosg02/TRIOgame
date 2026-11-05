@@ -37,12 +37,16 @@ lobbyButtons.forEach(function(button){
         if(responseConfig.ok){
             playerCount = selectedCount;
             selectionMessage.textContent = dataConfig.message;
-            
+
+            // Remove selection styling from all buttons
             lobbyButtons.forEach(function(btn){
                 btn.style.backgroundColor = "";
-            })
+                btn.classList.remove("selected");
+            });
 
-            button.style.backgroundColor = "#A6B1BA"
+            // Highlight the selected button
+            button.classList.add("selected");
+
         }else{
             selectionMessage.textContent = dataConfig.message;
         }
@@ -79,22 +83,27 @@ function loadPlayers() {
     fetch("/api/players")
         .then(response => response.json())
         .then(data => {
-            currentPlayers = data.players
+            currentPlayers = data.players;
 
-            playerList.innerHTML = ""
+            playerList.innerHTML = "";
 
-            currentPlayers.forEach((player)=>{
-                const newLi = document.createElement('li');
-                newLi.addEventListener("click", function(){
+            currentPlayers.forEach((player) => {
+                const newLi = document.createElement("li");
+
+                newLi.textContent = player.name;
+
+                // Select which player starts the game
+                newLi.addEventListener("click", function() {
                     startingPlayer = player.id;
                     loadPlayers();
-                } )
-                newLi.textContent = player.name;
-                if (player.id === startingPlayer){
-                    newLi.style.backgroundColor = "#A6B1BA";
+                });
+
+                // Highlight the selected starting player
+                if (player.id === startingPlayer) {
+                    newLi.classList.add("starting-player");
                 }
+
                 playerList.appendChild(newLi);
-                
             });
         });
 }
