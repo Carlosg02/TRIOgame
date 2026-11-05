@@ -464,8 +464,8 @@ let victoryTimeout = null;
 let victoryScheduled = false;
 
 function displayVictory(gamestate){
-    console.log("displayVictory called");
-    console.log("Game status:", gamestate.status);
+    // console.log("displayVictory called");
+    // console.log("Game status:", gamestate.status);
     const victoryScreen = document.getElementById("victory-celebration");
     const winnerName = document.getElementById("victory-player-name");
     const victoryTrios = document.getElementById("victory-trios");

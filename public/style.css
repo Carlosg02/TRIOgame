@@ -1663,5 +1663,195 @@ button:disabled {
         transform: translateY(120px);
     }
 
-    
+}
+
+/* Mobile layout foundation */
+@media (max-width: 1099px) {
+    .player-screen {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .game-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .game-table {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+
+        height: auto;
+        min-height: 0;
+        padding: 14px;
+    }
+
+    /* Center cards appear first */
+    .game-table .center-area {
+        order: 1;
+
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        box-sizing: border-box;
+
+        transform: none;
+        margin: 0;
+        padding: 12px;
+    }
+
+    .hand-area {
+        width: 100%;
+        min-width: 0;
+        margin-top: 0;
+        box-sizing: border-box;
+        padding: 12px;
+    }
+
+    /* Mobile opponent layout */
+    #players {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Remove desktop absolute positioning */
+    #players .opponent-card {
+        position: relative;
+        top: auto;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        transform: none;
+
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+
+        padding: 8px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Opponents appear underneath center cards */
+    .game-table #players {
+        order: 2;
+
+        position: relative;
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Arrange cards horizontally */
+    #player-hand {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        padding: 12px 4px;
+        min-width: 0;
+    }
+    /* Smaller cards */
+    #player-hand .game-card {
+        width: 58px;
+        height: 82px;
+        min-width: 0;
+        flex: 0 1 58px;
+        padding: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Slight card overlap */
+    #player-hand .game-card + .game-card {
+        margin-left: -12px;
+    }
+
+    /* Smaller animal illustrations */
+    #player-hand .card-animal {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+    }
+    /* Improve mobile hand interactions */
+    #player-hand .game-card {
+        position: relative;
+        touch-action: manipulation;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    /* Bring the touched card above neighboring cards */
+    #player-hand .game-card:active:not(:disabled) {
+        z-index: 10;
+        transform: translateY(-8px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Make keyboard navigation visible */
+    #player-hand .game-card:focus-visible {
+        z-index: 10;
+        outline: 3px solid #D5AD62;
+        outline-offset: 2px;
+    }
+
+    /* Mobile opponent card layout */
+    #players .opponent-card .opponent-hand {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+    }
+
+    /* Smaller cards inside opponent panels */
+    #players .opponent-card .opponent-hand .game-card {
+        width: 42px;
+        height: 60px;
+        min-width: 0;
+        flex-shrink: 0;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    /* Mobile center-card layout */
+    #center-cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* Mobile center-card sizing */
+    #center-cards .game-card {
+        width: 54px;
+        height: 76px;
+        min-width: 0;
+        flex: 0 0 54px;
+        padding: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Keep revealed animal illustrations proportional */
+    #center-cards .card-animal {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+    }
+}
+/* Mobile center-card animal sizing */
+@media (max-width: 1099px) {
+    #center-cards .game-card .card-animal {
+        width: 45px;
+        height: 45px;
+        max-width: 45px;
+        max-height: 45px;
+        object-fit: contain;
+    }
 }
