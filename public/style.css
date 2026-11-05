@@ -134,11 +134,13 @@ button:disabled {
 }
 
 /* Host name input */
-#host-name {
+/* Shared Host and Join name inputs */
+#host-name,
+#player-name {
     width: 100%;
     padding: 14px 16px;
 
-    background: #102A25;
+    background: var(--color-background);
     color: var(--color-text);
 
     border: 2px solid rgba(213, 173, 98, 0.5);
@@ -148,19 +150,24 @@ button:disabled {
     font-size: 1rem;
 
     outline: none;
-    transition: border-color 0.2s ease,
-                box-shadow 0.2s ease;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-#host-name::placeholder {
+/* Shared placeholder styling */
+#host-name::placeholder,
+#player-name::placeholder {
     color: var(--color-muted);
 }
 
-#host-name:focus {
+/* Shared focus styling */
+#host-name:focus,
+#player-name:focus {
     border-color: var(--color-highlight);
     box-shadow: 0 0 0 3px rgba(213, 173, 98, 0.15);
 }
-
 /* Mobile adjustments */
 @media (max-width: 600px) {
     .lobby {
@@ -179,10 +186,15 @@ button:disabled {
 
 /* Player-count selection buttons */
 .player-selection .lobby-button {
-    background: #17382F;
+    background: linear-gradient(
+        145deg,
+        #234A3C,
+        #17382F
+    );
+
     color: var(--color-text);
 
-    border: 2px solid var(--color-highlight);
+    border: 2px solid rgba(213, 173, 98, 0.7);
     border-radius: 12px;
 
     padding: 12px 18px;
@@ -191,27 +203,53 @@ button:disabled {
     font-size: 1rem;
     font-weight: bold;
 
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
     transition:
         background 0.2s ease,
         color 0.2s ease,
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
 }
 
 /* Hover effect */
 .player-selection .lobby-button:hover:not(:disabled) {
-    background: #3C7258;
+    background: linear-gradient(
+        145deg,
+        #3C7258,
+        #285340
+    );
+
+    border-color: var(--color-highlight);
+
     transform: translateY(-3px);
 
-    box-shadow: 0 4px 12px rgba(213, 173, 98, 0.25);
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.25),
+        0 0 12px rgba(213, 173, 98, 0.2);
 }
 
 /* Selected player count */
-.player-selection .lobby-button.selected {
-    background: var(--color-highlight);
-    color: #102A25;
+.player-selection .lobby-button.selected,
+.player-selection .lobby-button.selected:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        #E8C77C,
+        #B99A5B
+    );
 
-    box-shadow: 0 0 14px rgba(213, 173, 98, 0.35);
+    color: var(--color-background);
+
+    border-color: #F5D47A;
+
+    box-shadow:
+        0 0 16px rgba(213, 173, 98, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+    transform: none;
 }
 
 /* Selection feedback */
@@ -223,7 +261,9 @@ button:disabled {
 }
 
 /* Start Game button */
-#start-game-button {
+/* Shared lobby action buttons */
+#start-game-button,
+#join-game-button {
     display: block;
     width: 100%;
 
@@ -233,25 +273,29 @@ button:disabled {
         #B99A5B
     );
 
-    color: #102A25;
+    color: var(--color-background);
 
     border: 2px solid #E8C77C;
     border-radius: 14px;
 
     padding: 16px 24px;
 
-    font-size: 1.2rem;
     font-weight: bold;
     letter-spacing: 1px;
 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Start Game hover effect */
-#start-game-button:hover:not(:disabled) {
+/* Shared hover effect */
+#start-game-button:hover:not(:disabled),
+#join-game-button:hover:not(:disabled) {
     transform: translateY(-3px);
-
     box-shadow: 0 8px 20px rgba(213, 173, 98, 0.3);
+}
+
+/* Host-specific font size */
+#start-game-button {
+    font-size: 1.2rem;
 }
 
 /* Start Game disabled state */
@@ -280,7 +324,7 @@ button:disabled {
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 /* Individual player rows */
@@ -295,29 +339,40 @@ button:disabled {
     border-left: 4px solid var(--color-highlight);
     border-radius: 10px;
 
-    padding: 12px 16px;
+    padding: 10px 16px;
 
     color: var(--color-text);
     font-size: 1rem;
     font-weight: bold;
 
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
-/* Starting player selection */
-#player-list li {
     cursor: pointer;
 
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
 /* Hover over a player */
 #player-list li:hover {
-    background: #3C7258;
+    background: linear-gradient(
+        135deg,
+        #3C7258,
+        #285340
+    );
+
     border-color: var(--color-highlight);
+
+    transform: translateX(3px);
+
+    box-shadow:
+        0 5px 14px rgba(0, 0, 0, 0.25),
+        0 0 8px rgba(213, 173, 98, 0.12);
 }
 
 /* Selected starting player */
@@ -325,16 +380,201 @@ button:disabled {
 #player-list li.starting-player:hover {
     background: linear-gradient(
         135deg,
-        #D5AD62,
+        #E8C77C,
         #B99A5B
     );
 
-    color: #102A25;
+    color: var(--color-background);
 
-    border: 2px solid #E8C77C;
-    border-left: 4px solid #E8C77C;
+    border: 2px solid #F5D47A;
+    border-left: 4px solid #F5D47A;
 
-    box-shadow: 0 0 14px rgba(213, 173, 98, 0.35);
+    box-shadow:
+        0 0 18px rgba(213, 173, 98, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+    transform: none;
+}
+
+/* ========================================
+   JOIN LOBBY
+======================================== */
+
+.join-lobby {
+    max-width: 520px;
+    margin: 8vh auto;
+    text-align: center;
+}
+
+/* Main TRIO title */
+.join-lobby > h1 {
+    font-size: clamp(3rem, 10vw, 4.5rem);
+    letter-spacing: 8px;
+    color: var(--color-highlight);
+    margin-bottom: 8px;
+}
+
+/* Subtitle */
+.join-subtitle {
+    color: var(--color-muted);
+    font-size: 1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+/* Inner join panel */
+.join-lobby .join-panel {
+    background: rgba(8, 31, 25, 0.5);
+    border: 1px solid rgba(213, 173, 98, 0.4);
+    border-radius: 18px;
+    padding: 28px 24px;
+}
+
+/* Panel heading */
+.join-panel h2 {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Description */
+.join-description {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+}
+
+/* Name label */
+.join-panel label {
+    display: block;
+    text-align: left;
+    color: var(--color-highlight);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Name input */
+/* Join-specific input spacing */
+#player-name {
+    display: block;
+    padding: 15px 16px;
+    margin-bottom: 20px;
+}
+
+/* Join Game button */
+/* Join-specific font size */
+#join-game-button {
+    font-size: 1.15rem;
+}
+
+/* Join feedback message */
+#join-message {
+    color: var(--color-text);
+    font-weight: bold;
+    margin: 16px 0 0;
+}
+
+#join-message:empty {
+    display: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .join-lobby {
+        margin: 24px auto;
+        padding: 24px 16px;
+    }
+
+    .join-lobby .join-panel {
+        padding: 24px 16px;
+    }
+
+    .join-lobby > h1 {
+        letter-spacing: 5px;
+    }
+}
+
+/* =========================================
+   IMMERSIVE RAINFOREST LOBBY DECORATIONS
+========================================= */
+
+/* Allow decorations to be positioned inside lobby panels */
+.host-lobby,
+.join-lobby {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-image:
+        url("/assets/jungle-flowers.png"),
+        url("/assets/jungle-flowers.png"),
+        radial-gradient(
+            ellipse at 50% 15%,
+            rgba(46, 155, 101, 0.18),
+            transparent 65%
+        ),
+        linear-gradient(
+            145deg,
+            #234A3C,
+            #102A25
+        );
+
+    background-position:
+        right -25px top -20px,
+        left -30px bottom -25px,
+        center,
+        center;
+
+    background-size:
+        135px auto,
+        115px auto,
+        cover,
+        cover;
+
+    background-repeat: no-repeat;
+}
+
+/* Tropical foliage framing the lobby panels */
+.host-lobby::before,
+.host-lobby::after,
+.join-lobby::before,
+.join-lobby::after {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    background-image: url("/assets/jungle-foliage.png");
+    background-size: 440px auto;
+    background-repeat: no-repeat;
+    background-position: left top;
+
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Upper-left foliage */
+.host-lobby::before,
+.join-lobby::before {
+    top: -45px;
+    left: -50px;
+}
+
+/* Lower-right foliage */
+.host-lobby::after,
+.join-lobby::after {
+    bottom: -45px;
+    right: -50px;
+    transform: rotate(180deg);
+}
+
+/* Keep lobby content above the foliage */
+.host-lobby > *,
+.join-lobby > * {
+    position: relative;
+    z-index: 1;
 }
 
 
@@ -404,16 +644,6 @@ button:disabled {
     box-shadow: var(--shadow-card);
     padding: 20px;
     margin-bottom: 24px;
-}
-
-
-/* Individual opponent cards */
-.opponent-card {
-    background-color: #FFF8ED;
-    border: 2px solid #E9E2F2;
-    border-radius: var(--radius-card);
-    padding: 16px;
-    margin-bottom: 16px;
 }
 
 /* Opponent name */
@@ -491,11 +721,11 @@ button:disabled {
     border-color: var(--color-highlight);
 }
 
-/* Keep revealed center cards bright even when they cannot be clicked */
+/* Keep revealed center cards bright even when disabled */
 #center-cards .revealed-card:disabled {
     opacity: 1;
     background-color: #FFFFFF;
-    color: var(--color-text);
+    color: #24382F;
     border-color: var(--color-highlight);
     cursor: default;
 }
@@ -561,23 +791,24 @@ button:disabled {
     pointer-events: none;
 }
 
-/* Individual opponent cards */
+/* Individual opponent panels - Rainforest theme */
 .opponent-card {
     position: absolute;
     width: 220px;
+
     padding: 14px;
+    margin-bottom: 16px;
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(30, 75, 56, 0.97),
-            rgba(13, 43, 34, 0.98)
-        );
+    background: linear-gradient(
+        145deg,
+        rgba(30, 75, 56, 0.97),
+        rgba(13, 43, 34, 0.98)
+    );
 
-    color: #F5E6C8;
+    color: var(--color-text);
 
     border: 2px solid rgba(213, 173, 98, 0.75);
-    border-radius: 18px;
+    border-radius: var(--radius-card);
 
     box-shadow:
         0 10px 25px rgba(0, 0, 0, 0.3),
@@ -800,14 +1031,6 @@ button:disabled {
     box-shadow: none;
 }
 
-/* Keep revealed cards visible */
-#center-cards .revealed-card:disabled {
-    opacity: 1;
-    background-color: #FFFFFF;
-    color: var(--color-text);
-    border-color: var(--color-highlight);
-    cursor: default;
-}
 
 /* Player's hand panel */
 .hand-area {
@@ -914,13 +1137,6 @@ button:disabled {
         pointer-events: auto;
     }
 
-    .opponent-card {
-        position: static;
-        width: 100%;
-        max-width: none;
-        transform: none;
-    }
-
     .center-area {
         width: 100%;
         padding: 14px;
@@ -1021,10 +1237,6 @@ button:disabled {
     color: #24382F;
 }
 
-#center-cards .revealed-card:disabled {
-    color: #24382F;
-}
-
 #player-hand .hand-card-revealed {
     border: 3px solid #2E9B65;
     box-shadow: 0 0 12px rgba(46, 155, 101, 0.45);
@@ -1039,12 +1251,8 @@ button:disabled {
     color: transparent;
 }
 
-/* Animate Newly Revealed Cards */
-#center-cards .newly-revealed {
-    animation: cardFlip 0.5s ease-in-out;
-}
-
-/* Animate newly revealed opponent cards */
+/* Animate newly revealed center and opponent cards */
+#center-cards .newly-revealed,
 .revealed-hand .newly-revealed {
     animation: cardFlip 0.5s ease-in-out;
 }
@@ -1096,14 +1304,28 @@ button:disabled {
 }
 
 /* Celebration content */
+/* Rainforest Trio celebration panel */
 .trio-celebration-content {
-    background-color: #FFFFFF;
-    border: 4px solid #F5E6C8;
-    border-radius: 20px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    position: relative;
+    isolation: isolate;
+
     width: min(350px, 85vw);
+    padding: 36px 48px;
+    text-align: center;
+
+    background: linear-gradient(
+        145deg,
+        rgba(35, 80, 58, 0.9),
+        rgba(12, 42, 32, 0.95)
+    );
+
+    border: 3px solid var(--color-highlight);
+    border-radius: 28px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(213, 173, 98, 0.18),
+        inset 0 0 25px rgba(213, 173, 98, 0.08);
 }
 
 /* TRIO heading */
@@ -1242,26 +1464,39 @@ button:disabled {
     display: none;
 }
 
-/* Victory celebration card */
+/* Rainforest Victory Celebration Panel */
 .victory-celebration-content {
-    background-color: #25354A;
-    border: 4px solid #F5E6C8;
-    border-radius: 24px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+    position: relative;
+
     width: min(500px, 90vw);
     max-height: 90vh;
-    overflow-y: auto;
+    padding: 40px;
+    text-align: center;
+
+    background: linear-gradient(
+        145deg,
+        #24553F,
+        #102E25
+    );
+
+    border: 3px solid var(--color-highlight);
+    border-radius: 28px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(213, 173, 98, 0.2),
+        inset 0 0 25px rgba(213, 173, 98, 0.08);
+
+    overflow: hidden;
 }
 
-/* WINNER heading */
+/* Golden WINNER heading */
 .victory-celebration-content h2 {
     font-size: 3.5rem;
     color: #F5D47A;
     margin-bottom: 15px;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
-
 /* Winning player's name */
 #victory-player-name {
     font-size: 2rem;
@@ -1370,23 +1605,54 @@ button:disabled {
     }
 }
 
-/* New Game button on victory screen */
+/* New Game button on Victory screen */
 .victory-celebration-content #new-game-button {
     margin-top: 30px;
     padding: 14px 32px;
-    background-color: #2E9B65;
-    color: #FFFFFF;
-    border: 2px solid #F5E6C8;
+
+    background: linear-gradient(
+        135deg,
+        #D5AD62,
+        #B88A43
+    );
+
+    color: var(--color-background);
+
+    border: 2px solid var(--color-text);
     border-radius: 12px;
+
     font-size: 1.2rem;
     font-weight: bold;
+    letter-spacing: 1px;
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s;
 }
 
+/* New Game button hover */
 .victory-celebration-content #new-game-button:hover {
-    background-color: #247A50;
+    background: linear-gradient(
+        135deg,
+        #E8C77C,
+        #D5AD62
+    );
+
     transform: scale(1.05);
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.35),
+        0 0 15px rgba(213, 173, 98, 0.3);
+}
+
+/* Keep New Game hidden for non-host players */
+.victory-celebration-content #new-game-button[hidden] {
+    display: none;
 }
 
 /* Keep the button hidden for non-host players */
@@ -1522,24 +1788,6 @@ button:disabled {
 }
 
 /* Celebration content */
-.trio-celebration-content {
-    padding: 36px 48px;
-    text-align: center;
-
-    background: linear-gradient(
-        145deg,
-        rgba(35, 80, 58, 0.9),
-        rgba(12, 42, 32, 0.95)
-    );
-
-    border: 3px solid #D5AD62;
-    border-radius: 28px;
-
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.45),
-        0 0 40px rgba(213, 173, 98, 0.18),
-        inset 0 0 25px rgba(213, 173, 98, 0.08);
-}
 
 /* Golden TRIO heading */
 .trio-celebration-content h2 {
@@ -1549,30 +1797,18 @@ button:disabled {
     text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
 }
 
-/* Player who collected the Trio */
-.trio-celebration-content p {
-    color: #F5E6C8;
-    font-size: 1.4rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-/* Make the Trio collection message clearly readable */
+/* Trio collection message */
 .trio-celebration-content p {
     color: #FFF2D6;
     font-size: 1.5rem;
     font-weight: 800;
+    letter-spacing: 1px;
     text-align: center;
     line-height: 1.4;
 
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
 }
 
-/* Allow floral decorations inside the celebration panel */
-.trio-celebration-content {
-    position: relative;
-    isolation: isolate;
-}
 
 /* Tropical flowers in the top-right corner */
 .trio-celebration-content::after {
@@ -1631,31 +1867,6 @@ button:disabled {
         );
 }
 
-/* Elegant victory panel */
-.victory-celebration-content {
-    position: relative;
-    overflow: hidden;
-
-    background: linear-gradient(
-        145deg,
-        #24553F,
-        #102E25
-    );
-
-    border: 3px solid #D5AD62;
-    border-radius: 28px;
-
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.45),
-        0 0 40px rgba(213, 173, 98, 0.2),
-        inset 0 0 25px rgba(213, 173, 98, 0.08);
-}
-
-/* Golden winner heading */
-.victory-celebration-content h2 {
-    color: #D5AD62;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
 
 /* Winner name and supporting text */
 #victory-player-name,
@@ -1691,42 +1902,6 @@ button:disabled {
     z-index: 1;
 }
 
-/* Victory screen New Game button */
-#new-game-button {
-    background: linear-gradient(
-        135deg,
-        #D5AD62,
-        #B88A43
-    );
-
-    color: #102A25;
-    font-size: 1.1rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-
-    border: 2px solid #F5E6C8;
-    border-radius: 14px;
-
-    padding: 14px 32px;
-    margin-top: 24px;
-
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-
-    cursor: pointer;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-#new-game-button:hover {
-    background: linear-gradient(
-        135deg,
-        #E8C77C,
-        #D5AD62
-    );
-
-    box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.35),
-        0 0 15px rgba(213, 173, 98, 0.3);
-}
 
 /* Desktop game layout */
 @media (min-width: 1100px) {
@@ -1983,6 +2158,7 @@ button:disabled {
         transform: none;
 
         width: 100%;
+        max-width: none;
         min-width: 0;
         box-sizing: border-box;
 
@@ -2009,16 +2185,21 @@ button:disabled {
         padding: 12px 4px;
         min-width: 0;
     }
-    /* Smaller cards */
+    /* Mobile player hand cards */
     #player-hand .game-card {
+        /* Card dimensions */
         width: 58px;
         height: 82px;
         min-width: 0;
         flex: 0 1 58px;
         padding: 4px;
         box-sizing: border-box;
-    }
 
+        /* Touch interactions */
+        position: relative;
+        touch-action: manipulation;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
     /* Slight card overlap */
     #player-hand .game-card + .game-card {
         margin-left: -12px;
@@ -2030,13 +2211,6 @@ button:disabled {
         height: 42px;
         object-fit: contain;
     }
-    /* Improve mobile hand interactions */
-    #player-hand .game-card {
-        position: relative;
-        touch-action: manipulation;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
     /* Bring the touched card above neighboring cards */
     #player-hand .game-card:active:not(:disabled) {
         z-index: 10;
@@ -2088,16 +2262,6 @@ button:disabled {
         padding: 4px;
         box-sizing: border-box;
     }
-
-    /* Keep revealed animal illustrations proportional */
-    #center-cards .card-animal {
-        width: 30px;
-        height: 30px;
-        object-fit: contain;
-    }
-}
-/* Mobile center-card animal sizing */
-@media (max-width: 1099px) {
     #center-cards .game-card .card-animal {
         width: 45px;
         height: 45px;
@@ -2105,4 +2269,5 @@ button:disabled {
         max-height: 45px;
         object-fit: contain;
     }
+
 }
