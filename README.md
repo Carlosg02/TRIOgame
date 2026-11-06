@@ -59,7 +59,7 @@ The project intentionally uses a lightweight stack without a frontend framework 
 ### Installation
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone <https://github.com/Carlosg02/TRIOgame.git>
 cd <YOUR_REPOSITORY_FOLDER>
 npm install
 npm start
