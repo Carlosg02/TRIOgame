@@ -4,6 +4,27 @@ A browser-based, turn-based multiplayer card game for **3–6 players**, built w
 
 The game features a custom rainforest-inspired interface, animal-themed cards, animated reveals, and server-managed gameplay.
 
+## Gameplay preview
+
+![TRIO multiplayer gameplay showing the jungle-themed tabletop, center cards, and player hands](screenshots/gameplay.png)
+
+<details>
+<summary>See more screenshots: lobby, card reveal, and victory screen</summary>
+
+### Host lobby
+
+![TRIO host lobby with three connected players](screenshots/lobby.png)
+
+### Card reveal
+
+![TRIO game during a turn with revealed cards](screenshots/card-reveal.png)
+
+### Victory celebration
+
+![TRIO victory overlay showing collected trios and confetti](screenshots/victory.png)
+
+</details>
+
 > **Project status:** Playable prototype designed for private games. Local-network play is the current supported setup; online hosting, stronger player authentication, automated tests, and WebSocket updates are planned improvements.
 
 ## Highlights
@@ -38,7 +59,7 @@ The project intentionally uses a lightweight stack without a frontend framework 
 ### Installation
 
 ```bash
-git clone <https://github.com/Carlosg02/TRIOgame.git>
+git clone <YOUR_REPOSITORY_URL>
 cd <YOUR_REPOSITORY_FOLDER>
 npm install
 npm start
@@ -128,16 +149,6 @@ The server owns the canonical game state and responds to browser requests with p
 └── README.md
 ```
 
-## Screenshots and demo
-
-Gameplay screenshots and a short demo will be added here. Recommended captures:
-
-1. Host lobby with connected players
-2. Active game showing the rainforest tabletop
-3. A completed trio or victory celebration
-
-A screenshot or short recording is especially useful for reviewers who cannot easily gather 3–6 people to run the game.
-
 ## Current limitations and roadmap
 
 This project is a playable prototype rather than a production-ready internet service.
@@ -147,7 +158,7 @@ This project is a playable prototype rather than a production-ready internet ser
 - [ ] Move from periodic polling to WebSockets / Socket.IO
 - [ ] Improve reconnection and network error handling
 - [ ] Refactor game logic into independently testable modules
-- [ ] Add continuous integration and demo media
+- [ ] Add continuous integration and a short gameplay video
 - [ ] Evaluate deployment for private online games
 
 **Security note:** Player identifiers are not sufficient authentication, and the current name-based reconnect endpoint is not secure against impersonation. Do not expose this version as a public internet service.
@@ -160,4 +171,4 @@ The game is an **unofficial, independently developed adaptation inspired by TRIO
 
 ## License
 
-No license is currently declared for the full repository. See `package.json` for its existing package metadata. A repository-wide license and permissions for game-related assets should be reviewed before broader distribution.
+The current package metadata lists an ISC license, but a repository-wide license file has not been added. Review ownership and permissions for all assets, as well as the use of the game's name and rules, before selecting a distribution license.
