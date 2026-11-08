@@ -79,6 +79,18 @@ async function checkGameStatus(){
     }
 }
 
-setInterval(() => {
+//Check on initial load
+checkGameStatus();
+
+//Check when Socket connects or reconnects
+socket.on("connect", () => {
+    console.log(" Conncected to TRIO, Checking game status...");
     checkGameStatus();
-}, 1000);
+});
+
+//Check immediately when host starts game
+socket.on("gameStarted", () => {
+    console.log("Game started, Entering game page...");
+    checkGameStatus();
+})
+

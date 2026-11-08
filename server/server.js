@@ -1,8 +1,12 @@
 const express = require('express');
 const path = require('path');
 const { randomUUID } = require("node:crypto")
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 
 const PORT = 3000;
 
@@ -442,6 +446,8 @@ app.post("/api/players", (req, res) => {
         game.hostPlayerID = newPlayer.id;
     }
 
+    //Notify browsers that a new player joined
+    io.emit("playersUpdated");
 
     res.status(201).json({
         message: "Player added successfully: Welcome, " + playerName + "!",
@@ -496,6 +502,10 @@ app.post("/api/game", (req,res) => {
 
     setStartingPlayer(startingPlayerId);
     startGame();
+
+    //Notify browers that game has started
+    io.emit("gameStarted");
+    
     return res.status(200).json({
         message: "Game started successfully!"
     });
@@ -617,6 +627,14 @@ app.post("/api/players/reconnect", (req,res) =>{
 
 })
 
-app.listen(PORT, () => {
+io.on('connection', (socket) => {
+    console.log('Player connected:' + socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('PLayer disconnected:' + socket.id);
+    });
+});
+
+httpServer.listen(PORT, () => {
     console.log('Server is running on port ' + PORT)
 })

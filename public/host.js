@@ -136,6 +136,14 @@ startGameButton.addEventListener("click",async function(){
 
 loadPlayers();
 
-setInterval(loadPlayers,2000)
+//refresh after connecting or reconnecting to Socket.io
+socket.on("connect", () => {
+    console.log("Connected to TRIO, Syncing player list...");
+    loadPlayers();
+});
 
-
+//Update plaeyr list when a new player joins
+socket.on("playersUpdated", () => {
+    console.log("Players update event received. Refreshing lobby...");
+    loadPlayers();
+});
