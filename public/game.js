@@ -568,6 +568,15 @@ async function updateGame(){
 
 updateGame();
 
-setInterval(() =>{
+//Socket.io refresh the game when game state changes
+socket.on("gameStateChanged",() => {
+    console.log("Game State Changed. Updating game page...");
     updateGame();
-},1000);
+});
+
+socket.on("connect",() => {
+    console.log("Connected to TRIO. Updating game page...");
+    updateGame();
+});
+
+

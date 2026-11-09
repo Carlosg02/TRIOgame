@@ -71,11 +71,11 @@ function dealCards(deck,players){
 function startGame(){
     const deck = createDeck();
     const center = dealCards(deck, game.players);
+
     game.center = center;
     game.status = "playing";
-    setStartingPlayer();
-    console.log(game);
     
+    console.log(game);
 }
 
 function setStartingPlayer(playerId){
@@ -185,6 +185,9 @@ function endTurn(){
     game.turn.locked = false;
     game.turn.revealedCards = [];
     advanceTurn();
+
+    //Socket.io notify clients that turn has changed
+    io.emit("gameStateChanged");
 }
 
 function removeRevealedCard(revealedCard){
@@ -240,6 +243,9 @@ function collectTrio(){
     }else{
         advanceTurn();
     }
+
+    //Socket.io notify clients after trio is collected
+    io.emit("gameStateChanged");
 
 }
 
@@ -521,6 +527,9 @@ app.post("/api/game/reveal",(req,res)=>{
     console.log(results);
     
     if (results.success){
+        //Socket.io notify clients about game state change
+        io.emit("gameStateChanged");
+
         return res.status(200).json({
             message: results.message
         });
